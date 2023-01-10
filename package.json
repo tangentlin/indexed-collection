@@ -1,6 +1,6 @@
 {
   "name": "indexed-collection",
-  "version": "0.8.1",
+  "version": "0.8.2",
   "description": "Collections which supports indexes for fast retrieval, and composable filtering/sorting.",
   "license": "MIT",
   "repository": {

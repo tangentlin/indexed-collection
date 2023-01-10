@@ -102,15 +102,9 @@ describe('mutable collection tests', () => {
     });
 
     it('byMake(Tesla) should return the remaining Tesla-branded cars', () => {
-      expect(
-        new Set(
-          cars.byMake('Tesla')
-        )
-      ).toEqual(new Set([
-        newTeslaModelX,
-        usedTeslaModelX,
-        newTeslaModel3,
-      ]));
+      expect(new Set(cars.byMake('Tesla'))).toEqual(
+        new Set([newTeslaModelX, usedTeslaModelX, newTeslaModel3])
+      );
     });
   });
 });

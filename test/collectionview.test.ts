@@ -1,18 +1,19 @@
 import {
   allCars,
   AttributeTag,
-  CarCollection, ICar,
+  CarCollection,
+  ICar,
   usedChevyCamero,
   usedChevyEquinox,
   usedTeslaModel3,
   usedTeslaModelX,
 } from './testData';
-import {CollectionViewBase} from "../src";
+import { CollectionViewBase } from '../src';
 
-class UsedCarCollectionView extends CollectionViewBase<ICar, CarCollection>{
+class UsedCarCollectionView extends CollectionViewBase<ICar, CarCollection> {
   constructor(source: CarCollection) {
     super(source, {
-      filter: (car) => !car.isNew
+      filter: car => !car.isNew,
     });
   }
 
@@ -28,10 +29,13 @@ class UsedCarCollectionView extends CollectionViewBase<ICar, CarCollection>{
 /**
  * Nested view that's based on UsedCarCollection
  */
-class UsedGasCarCollectionView extends CollectionViewBase<ICar, UsedCarCollectionView> {
+class UsedGasCarCollectionView extends CollectionViewBase<
+  ICar,
+  UsedCarCollectionView
+> {
   constructor(source: UsedCarCollectionView) {
     super(source, {
-      filter: (car) => car.tags.includes(AttributeTag.Gas)
+      filter: car => car.tags.includes(AttributeTag.Gas),
     });
   }
 
@@ -57,34 +61,23 @@ describe('collection view tests', () => {
   describe('OneLevelIndex', () => {
     it('usedCars.byMake(Tesla) should return all used Tesla cars', () => {
       expect(new Set(usedCars.byMake('Tesla'))).toEqual(
-        new Set([
-          usedTeslaModel3,
-          usedTeslaModelX,
-        ])
+        new Set([usedTeslaModel3, usedTeslaModelX])
       );
     });
 
     it('usedGasCars.byMake(Tesla) should return no cars', () => {
-      expect(new Set(usedGasCars.byMake('Tesla'))).toEqual(
-        new Set([
-        ])
-      );
+      expect(new Set(usedGasCars.byMake('Tesla'))).toEqual(new Set([]));
     });
 
     it('usedGasCars.byMake(Chevy) should return all used Chevy', () => {
       expect(new Set(usedCars.byMake('Chevy'))).toEqual(
-        new Set([
-          usedChevyCamero,
-          usedChevyEquinox,
-        ])
+        new Set([usedChevyCamero, usedChevyEquinox])
       );
     });
 
     // Because there is no new car
     it('usedCars.byIsNew(true) should return no cars', () => {
-      expect(new Set(usedCars.byIsNew(true))).toEqual(
-        new Set([])
-      );
+      expect(new Set(usedCars.byIsNew(true))).toEqual(new Set([]));
     });
 
     it('usedCars.byIsNew(false) should return no cars', () => {
@@ -99,7 +92,6 @@ describe('collection view tests', () => {
     });
   });
 
-
   describe('When an item is removed from the collection', () => {
     beforeEach(() => {
       cars.remove(usedTeslaModel3);
@@ -107,9 +99,7 @@ describe('collection view tests', () => {
 
     it('usedCars.byMake(Tesla) should return all used Teslas except the removed one', () => {
       expect(new Set(usedCars.byMake('Tesla'))).toEqual(
-        new Set([
-          usedTeslaModelX,
-        ])
+        new Set([usedTeslaModelX])
       );
     });
   });
