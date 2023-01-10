@@ -1,0 +1,63 @@
+{
+  "name": "indexed-collection",
+  "version": "0.8.0",
+  "description": "Collections which supports indexes for fast retrieval, and composable filtering/sorting.",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tangentlin/indexed-collection.git"
+  },
+  "bugs": {
+    "url": "https://github.com/tangentlin/indexed-collection/issues"
+  },
+  "homepage": "https://github.com/tangentlin/indexed-collection#readme",
+  "main": "dist/index.js",
+  "typings": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "src"
+  ],
+  "engines": {
+    "node": ">=12"
+  },
+  "scripts": {
+    "start": "tsdx watch",
+    "build": "tsdx build",
+    "test": "tsdx test",
+    "lint": "tsdx lint",
+    "prepare": "tsdx build",
+    "prettier": "prettier --write -c src test",
+    "size": "size-limit",
+    "analyze": "size-limit --why"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "tsdx lint --fix"
+    }
+  },
+  "prettier": {
+    "printWidth": 80,
+    "semi": true,
+    "singleQuote": true,
+    "trailingComma": "es5"
+  },
+  "module": "dist/indexed-collection-1.esm.js",
+  "size-limit": [
+    {
+      "path": "dist/indexed-collection-1.cjs.production.min.js",
+      "limit": "10 KB"
+    },
+    {
+      "path": "dist/indexed-collection-1.esm.js",
+      "limit": "10 KB"
+    }
+  ],
+  "devDependencies": {
+    "@size-limit/preset-small-lib": "^8.1.0",
+    "husky": "^8.0.2",
+    "size-limit": "^8.1.0",
+    "tsdx": "^0.14.1",
+    "tslib": "^2.4.1",
+    "typescript": "^4.9.4"
+  }
+}
