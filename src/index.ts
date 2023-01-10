@@ -1,9 +1,8 @@
-export { IdCollection } from './collections/IdCollection';
+export { PrimaryKeyCollection } from './collections/PrimaryKeyCollection';
 export { IndexedCollectionBase } from './collections/IndexedCollectionBase';
 export { CollectionViewBase } from './collections/CollectionViewBase';
 
 export { Optional, Nullable } from './core/Optional';
-export { IHasId } from './core/IHasId';
 export { ICollectionOption } from './core/ICollectionOption';
 export { defaultCollectionOption } from './core/defaultCollectionOption';
 export { ICollectionViewOption } from './core/ICollectionViewOption';
