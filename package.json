@@ -1,6 +1,6 @@
 {
   "name": "indexed-collection",
-  "version": "0.8.0",
+  "version": "0.8.1",
   "description": "Collections which supports indexes for fast retrieval, and composable filtering/sorting.",
   "license": "MIT",
   "repository": {
@@ -18,7 +18,7 @@
     "src"
   ],
   "engines": {
-    "node": ">=12"
+    "node": ">=14"
   },
   "scripts": {
     "start": "tsdx watch",
