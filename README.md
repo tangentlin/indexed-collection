@@ -1,2 +1,2 @@
 # indexed-collection
-Collections which supports indexes for fast retrieval, and composable filtering/sorting.
+A library of classes which makes filtering, sorting and observing changes to arrays easier and more efficient.

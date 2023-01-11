@@ -1,14 +1,14 @@
+import { CollectionViewBase } from '../src';
 import {
   allCars,
   AttributeTag,
-  CarCollection,
   ICar,
   usedChevyCamero,
   usedChevyEquinox,
   usedTeslaModel3,
   usedTeslaModelX,
-} from './testData';
-import { CollectionViewBase } from '../src';
+} from './shared/data';
+import { CarCollection } from './shared/collections';
 
 class UsedCarCollectionView extends CollectionViewBase<ICar, CarCollection> {
   constructor(source: CarCollection) {
