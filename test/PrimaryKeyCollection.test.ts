@@ -3,7 +3,7 @@ import { ICar, newTeslaModelX } from './testData';
 
 class SimpleCarCollection extends IndexedCollectionBase<ICar> {
   constructor() {
-    super();
+    super(undefined);
   }
 }
 

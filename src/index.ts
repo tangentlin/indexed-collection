@@ -20,7 +20,5 @@ export {
 export { Signal, SignalType } from './signals/Signal';
 export { SignalObserver } from './signals/SignalObserver';
 
-export { OneLevelIndex } from './indexes/OneLevelIndex';
-export { TwoLevelIndex } from './indexes/TwoLevelIndex';
-export { ThreeLevelIndex } from './indexes/ThreeLevelIndex';
 export { IndexBase } from './indexes/IndexBase';
+export { CollectionIndex } from './indexes/CollectionIndex';
