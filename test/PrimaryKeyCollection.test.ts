@@ -1,5 +1,5 @@
 import { IndexedCollectionBase, PrimaryKeyCollection } from '../src';
-import { ICar, newTeslaModelX } from './testData';
+import { ICar, newTeslaModelX } from './shared/data';
 
 class SimpleCarCollection extends IndexedCollectionBase<ICar> {
   constructor() {

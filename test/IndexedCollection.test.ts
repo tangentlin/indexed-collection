@@ -1,17 +1,17 @@
 import {
   allCars,
   AttributeTag,
-  CarCollection,
   newChevyCamero,
   newChevyEquinox,
   newTeslaModel3,
   newTeslaModelX,
-  PriceRangeName,
   usedChevyCamero,
   usedChevyEquinox,
   usedTeslaModel3,
   usedTeslaModelX,
-} from './testData';
+} from './shared/data';
+import { PriceRangeName } from './shared/indexes';
+import { CarCollection } from './shared/collections';
 
 describe('mutable collection tests', () => {
   let cars: CarCollection;
