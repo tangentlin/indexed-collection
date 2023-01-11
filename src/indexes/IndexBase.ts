@@ -9,12 +9,12 @@ type SetOrArray<T> = Set<T> | T[];
 type LeafMap<T, KeyT = unknown> = Map<KeyT, SetOrArray<T>>;
 
 export abstract class IndexBase<T> {
-  protected readonly _keyFns: KeyExtract<T, unknown>[];
+  protected readonly _keyFns: readonly KeyExtract<T>[];
   protected readonly option: Readonly<ICollectionOption>;
   public internalMap = new Map();
 
   protected constructor(
-    keyFns: KeyExtract<T, unknown>[],
+    keyFns: readonly KeyExtract<T>[],
     option: Readonly<ICollectionOption> = defaultCollectionOption
   ) {
     this._keyFns = keyFns;
@@ -57,7 +57,7 @@ export abstract class IndexBase<T> {
     return removed;
   }
 
-  protected getValueInternal(keys: unknown[]): readonly T[] {
+  protected getValueInternal(keys: readonly unknown[]): readonly T[] {
     const convertedKeys = keys.map(k => [k]);
     const leafMaps = this.getLeafMaps(convertedKeys);
     const lastKey = keys[keys.length - 1];
@@ -71,7 +71,7 @@ export abstract class IndexBase<T> {
 
   protected getKeys(item: T): SetOrArray<unknown>[] {
     // @ts-ignore
-    return this._keyFns.map((keyFn, index) => {
+    return this._keyFns.map(keyFn => {
       return keyFn.isMultiple ? keyFn(item) : [keyFn(item)];
     });
   }

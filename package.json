@@ -1,8 +1,20 @@
 {
   "name": "indexed-collection",
-  "version": "0.8.2",
-  "description": "Collections which supports indexes for fast retrieval, and composable filtering/sorting.",
+  "version": "0.10.0",
+  "description": "A library of classes which makes filtering, sorting and observing changes to arrays easier and more efficient.",
   "license": "MIT",
+  "keywords": [
+    "typescript",
+    "collection",
+    "array",
+    "index",
+    "indexing",
+    "filter",
+    "sort",
+    "fast",
+    "change",
+    "observer"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/tangentlin/indexed-collection.git"
@@ -24,7 +36,7 @@
     "start": "tsdx watch",
     "build": "tsdx build",
     "test": "tsdx test",
-    "lint": "tsdx lint",
+    "lint": "tsdx lint --fix",
     "prepare": "tsdx build",
     "prettier": "prettier --write -c src test",
     "size": "size-limit",
@@ -59,5 +71,10 @@
     "tsdx": "^0.14.1",
     "tslib": "^2.4.1",
     "typescript": "^4.9.4"
+  },
+  "resolutions": {
+    "**/@typescript-eslint/eslint-plugin": "^5.48.1",
+    "**/@typescript-eslint/parser": "^5.48.1",
+    "**/@typescript-eslint/typescript-estree": "^5.48.1"
   }
 }

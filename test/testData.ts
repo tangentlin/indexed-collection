@@ -1,9 +1,8 @@
 import {
   ICollectionOption,
   IndexedCollectionBase,
+  CollectionIndex,
   MultipleKeyExtract,
-  OneLevelIndex,
-  TwoLevelIndex,
 } from '../src';
 
 export enum AttributeTag {
@@ -119,9 +118,9 @@ export const PriceRangeName = {
 };
 
 export const getByMakeIndex = (option?: ICollectionOption) =>
-  new OneLevelIndex<ICar, string>(car => car.make, option);
+  new CollectionIndex<ICar, [string]>([car => car.make], option);
 export const getByIsNewIndex = (option?: ICollectionOption) =>
-  new OneLevelIndex<ICar, boolean>(car => car.isNew, option);
+  new CollectionIndex<ICar, [boolean]>([car => car.isNew], option);
 
 const byPriceRangeExtract = (car: ICar) => {
   if (car.price < 10000) {
@@ -142,32 +141,34 @@ const byPriceRangeExtract = (car: ICar) => {
   return PriceRangeName.over50k;
 };
 export const getByPriceRangeIndex = (option?: ICollectionOption) =>
-  new OneLevelIndex<ICar, string>(byPriceRangeExtract, option);
+  new CollectionIndex<ICar, [string]>([byPriceRangeExtract], option);
 
 export const getByTagIndex = (option?: ICollectionOption) => {
   const tagsExtract: MultipleKeyExtract<ICar, AttributeTag> = (car: ICar) =>
     car.tags;
   tagsExtract.isMultiple = true;
-  return new OneLevelIndex<ICar, AttributeTag>(tagsExtract, option);
+  return new CollectionIndex<ICar, [AttributeTag]>([tagsExtract], option);
 };
 
 export const getByTagByPriceRangeIndex = (option?: ICollectionOption) => {
   const tagsExtract: MultipleKeyExtract<ICar, AttributeTag> = (car: ICar) =>
     car.tags;
   tagsExtract.isMultiple = true;
-  return new TwoLevelIndex<ICar, AttributeTag, string>(
-    tagsExtract,
-    byPriceRangeExtract,
+  return new CollectionIndex<ICar, [AttributeTag, string]>(
+    [tagsExtract, byPriceRangeExtract],
     option
   );
 };
 
 export class CarCollection extends IndexedCollectionBase<ICar> {
-  private readonly byMakeIndex;
-  private readonly byIsNewIndex;
-  private readonly byPriceRangeIndex;
-  private readonly byTagIndex;
-  private readonly byTagByPriceRangeIndex;
+  private readonly byMakeIndex: CollectionIndex<ICar, [string]>;
+  private readonly byIsNewIndex: CollectionIndex<ICar, [boolean]>;
+  private readonly byPriceRangeIndex: CollectionIndex<ICar, [string]>;
+  private readonly byTagIndex: CollectionIndex<ICar, [AttributeTag]>;
+  private readonly byTagByPriceRangeIndex: CollectionIndex<
+    ICar,
+    [AttributeTag, string]
+  >;
 
   constructor(option?: ICollectionOption) {
     super(undefined, undefined, option);
