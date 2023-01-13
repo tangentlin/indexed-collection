@@ -1,6 +1,6 @@
 {
   "name": "indexed-collection",
-  "version": "0.10.0",
+  "version": "1.0.0",
   "description": "A library of classes which makes filtering, sorting and observing changes to arrays easier and more efficient.",
   "license": "MIT",
   "keywords": [
@@ -53,14 +53,14 @@
     "singleQuote": true,
     "trailingComma": "es5"
   },
-  "module": "dist/indexed-collection-1.esm.js",
+  "module": "dist/indexed-collection.esm.js",
   "size-limit": [
     {
-      "path": "dist/indexed-collection-1.cjs.production.min.js",
+      "path": "dist/indexed-collection.cjs.production.min.js",
       "limit": "10 KB"
     },
     {
-      "path": "dist/indexed-collection-1.esm.js",
+      "path": "dist/indexed-collection.esm.js",
       "limit": "10 KB"
     }
   ],
