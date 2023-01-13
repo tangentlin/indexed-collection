@@ -60,7 +60,7 @@
       "limit": "10 KB"
     },
     {
-      "path": "dist/indexed-collection-1.esm.js",
+      "path": "dist/indexed-collection.esm.js",
       "limit": "10 KB"
     }
   ],
