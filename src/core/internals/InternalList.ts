@@ -16,6 +16,10 @@ export class InternalList<T> implements IInternalList<T> {
     this._isSynced = false;
   }
 
+  get count(): number {
+    return this.source.length;
+  }
+
   get output(): readonly T[] {
     if (!this._isSynced) {
       this._isSynced = true;

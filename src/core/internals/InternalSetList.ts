@@ -17,6 +17,10 @@ export class InternalSetList<T> implements IInternalList<T> {
     this._isSynced = false;
   }
 
+  get count(): number {
+    return this.source.size;
+  }
+
   get output(): readonly T[] {
     if (!this._isSynced) {
       this._isSynced = true;
