@@ -2,11 +2,14 @@ import { KeyExtract } from '../core/KeyExtract';
 import { ICollectionOption } from '../core/ICollectionOption';
 import { defaultCollectionOption } from '../core/defaultCollectionOption';
 import { CollectionNature } from '../core/CollectionNature';
+import { IInternalList } from '../core/internals/IInternalList';
+import { InternalSetList } from '../core/internals/InternalSetList';
+import { InternalList } from '../core/internals/InternalList';
 
 const emptyArray = Object.freeze([]);
 
 type SetOrArray<T> = Set<T> | T[];
-type LeafMap<T, KeyT = unknown> = Map<KeyT, SetOrArray<T>>;
+type LeafMap<T, KeyT = unknown> = Map<KeyT, IInternalList<T>>;
 
 export abstract class IndexBase<T> {
   protected readonly _keyFns: readonly KeyExtract<T>[];
@@ -45,11 +48,10 @@ export abstract class IndexBase<T> {
     const lastKeys = keys[keys.length - 1];
 
     let removed = false;
-    const isUsingSet = this.option.nature === CollectionNature.Set;
 
     for (const leafMap of leafMaps) {
       for (const key of lastKeys) {
-        const result = removeItemFromMap(key, item, leafMap, isUsingSet);
+        const result = removeItemFromMap(key, item, leafMap);
         removed = removed || result;
       }
     }
@@ -66,7 +68,7 @@ export abstract class IndexBase<T> {
       return emptyArray;
     }
 
-    return values instanceof Set ? Array.from(values) : values;
+    return values.output;
   }
 
   protected getKeys(item: T): SetOrArray<unknown>[] {
@@ -104,6 +106,10 @@ export abstract class IndexBase<T> {
   }
 }
 
+function getNewInternalList<T>(isUsingSet: boolean): IInternalList<T> {
+  return isUsingSet ? new InternalSetList(new Set()) : new InternalList([]);
+}
+
 function addItemToMap<T>(
   key: unknown,
   item: T,
@@ -111,48 +117,24 @@ function addItemToMap<T>(
   isUsingSet: boolean
 ): boolean {
   if (!map.has(key)) {
-    const content: SetOrArray<T> = isUsingSet ? new Set([item]) : [item];
+    const content: IInternalList<T> = getNewInternalList(isUsingSet);
+    content.add(item);
     map.set(key, content);
     return true;
   }
 
-  const items = map.get(key);
-  if (isUsingSet) {
-    const itemSet = items as Set<T>;
-    if (!itemSet.has(item)) {
-      itemSet.add(item);
-      return true;
-    }
-  } else {
-    const itemArray = items as T[];
-    if (!itemArray.includes(item)) {
-      itemArray.push(item);
-      return true;
-    }
+  const items = map.get(key) as IInternalList<T>;
+  if (!items.exists(item)) {
+    items.add(item);
+    return true;
   }
   return false;
 }
 
-function removeItemFromMap<T>(
-  key: unknown,
-  item: T,
-  map: LeafMap<T>,
-  isUsingSet: boolean
-): boolean {
-  const items = map.get(key);
-  if (isUsingSet) {
-    const itemSet = items as Set<T>;
-    if (itemSet.has(item)) {
-      itemSet.delete(item);
-      return true;
-    }
-  } else {
-    const itemArray = items as T[];
-    const itemIndex = itemArray.indexOf(item);
-    if (itemIndex >= 0) {
-      itemArray.splice(itemIndex, 1);
-      return true;
-    }
+function removeItemFromMap<T>(key: unknown, item: T, map: LeafMap<T>): boolean {
+  const items = map.get(key) as IInternalList<T>;
+  if (items.exists(item)) {
+    items.remove(item);
   }
   return false;
 }
