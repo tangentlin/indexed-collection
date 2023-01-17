@@ -21,4 +21,8 @@ export interface IInternalList<T> {
    * Signal the list has
    */
   invalidate(): void;
+
+  readonly output: readonly T[];
+
+  readonly count: number;
 }
