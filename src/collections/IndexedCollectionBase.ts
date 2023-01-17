@@ -6,16 +6,13 @@ import { SignalObserver } from '../signals/SignalObserver';
 import { ICollectionOption } from '../core/ICollectionOption';
 import { defaultCollectionOption } from '../core/defaultCollectionOption';
 import { CollectionNature } from '../core/CollectionNature';
+import { IInternalList } from '../core/internals/IInternalList';
+import { InternalSetList } from '../core/internals/InternalSetList';
+import { InternalList } from '../core/internals/InternalList';
 
 export abstract class IndexedCollectionBase<T> extends SignalObserver
   implements IMutableCollection<T> {
-  /**
-   * Whether the set has deviated from the list
-   * @protected
-   */
-  protected isDirty = false;
-  private _list: T[] = [];
-  private _set: Set<T> = new Set();
+  private _allItemList: IInternalList<T> = new InternalSetList<T>(new Set());
 
   protected indexes: Set<IIndex<T>> = new Set();
 
@@ -32,6 +29,11 @@ export abstract class IndexedCollectionBase<T> extends SignalObserver
     super();
     this.option = Object.assign({}, defaultCollectionOption, option);
     this.buildIndexes(additionalIndexes);
+    if (this.option.nature === CollectionNature.Set) {
+      this._allItemList = new InternalSetList<T>(new Set());
+    } else {
+      this._allItemList = new InternalList<T>([]);
+    }
     if (initialValues) {
       this.addRange(initialValues);
     }
@@ -46,8 +48,7 @@ export abstract class IndexedCollectionBase<T> extends SignalObserver
       index.reset();
     }
 
-    const items =
-      this.option.nature === CollectionNature.Set ? this._set : this._list;
+    const items = this._allItemList.output;
     for (const item of items) {
       for (const index of this.indexes) {
         index.index(item);
@@ -64,12 +65,7 @@ export abstract class IndexedCollectionBase<T> extends SignalObserver
       return false;
     }
 
-    if (this.option.nature === CollectionNature.Set) {
-      this._set.add(item);
-      this.isDirty = true;
-    } else {
-      this._list.push(item);
-    }
+    this._allItemList.add(item);
 
     for (const index of this.indexes) {
       index.index(item);
@@ -86,11 +82,7 @@ export abstract class IndexedCollectionBase<T> extends SignalObserver
   }
 
   exists(item: T): boolean {
-    if (this.option.nature === CollectionNature.Set) {
-      return this._set.has(item);
-    }
-
-    return this._list.includes(item);
+    return this._allItemList.exists(item);
   }
 
   remove(item: T): boolean {
@@ -98,16 +90,7 @@ export abstract class IndexedCollectionBase<T> extends SignalObserver
       return false;
     }
 
-    if (this.option.nature === CollectionNature.Set) {
-      this._set.delete(item);
-      this.isDirty = true;
-    } else {
-      const index: number = this._list.findIndex(listItem => listItem === item);
-      if (index < 0) {
-        return false;
-      }
-      this._list.splice(index, 1);
-    }
+    this._allItemList.remove(item);
 
     for (const index of this.indexes) {
       index.unIndex(item);
@@ -117,16 +100,11 @@ export abstract class IndexedCollectionBase<T> extends SignalObserver
   }
 
   get items(): readonly T[] {
-    if (this.isDirty && this.option.nature === CollectionNature.Set) {
-      this._list = Array.from(this._set);
-    }
-    return this._list;
+    return this._allItemList.output;
   }
 
   get count(): number {
-    return this.option.nature === CollectionNature.Set
-      ? this._set.size
-      : this._list.length;
+    return this._allItemList.count;
   }
 
   protected notifyChange(): void {
