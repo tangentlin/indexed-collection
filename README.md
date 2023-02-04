@@ -44,7 +44,7 @@ class PeopleCollection extends IndexedCollectionBase {
   }
 
   byGender(gender) {
-    this.genderIndex.getValue(gender);
+    return this.genderIndex.getValue(gender);
   }
 }
 ```
@@ -135,11 +135,11 @@ this.buildIndexes([
 ```JavaScript
 // Add byHobby and byGenderAndHobby methods to PeopleCollection for ease of access
 byHobby(hobby) {
-  this.hobbyIndex.getValue(hobby);
+  return this.hobbyIndex.getValue(hobby);
 }
 
 byGenderAndHobby(gender, hobby) {
-  this.hobbyIndex.getValue(gender, hobby);
+  return this.hobbyIndex.getValue(gender, hobby);
 }
 ```
 
@@ -323,10 +323,10 @@ for more details.
 
 ### View
 
-If a Collection is seen as a table in a relational database, a View is similar to View in the relational
+If a Collection is seen as a table in a relational database, a CollectionView is similar to View in the relational
 database as well.  A view is a read-only version of a collection with values filtered and sorted.
 
-A view has to depend on a source collection, and any changes on sourced collection would immediately
+A view has to depend on a source collection or CollectionView, and any changes on sourced collection would immediately
 impact the views output.
 
 To define a view, one would need to create a class based on `CollectionViewBase` class with the following
@@ -355,7 +355,7 @@ class SeniorPeopleView extends CollectionViewBase<IPerson, PeopleCollection> {
   }
   
   byGender(gender: string): readonly IPerson[] {
-    this.applyFilterAndSort(
+    return this.applyFilterAndSort(
       this.source.byGender(gender)
     );
   }
@@ -379,7 +379,7 @@ class SeniorPeopleView extends CollectionViewBase<IPerson, SeniorPeopleView> {
   }
   
   byGender(gender: string): readonly IPerson[] {
-    this.applyFilterAndSort(
+    return this.applyFilterAndSort(
       this.source.byGender(gender)
     );
   }
