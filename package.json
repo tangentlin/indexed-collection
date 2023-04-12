@@ -1,6 +1,6 @@
 {
   "name": "indexed-collection",
-  "version": "1.1.1",
+  "version": "1.2.0",
   "description": "A zero-dependency library of classes that make filtering, sorting and observing changes to arrays easier and more efficient.",
   "license": "MIT",
   "keywords": [
@@ -67,8 +67,8 @@
     "@size-limit/preset-small-lib": "^8.1.0",
     "size-limit": "^8.1.0",
     "tsdx": "^0.14.1",
-    "tslib": "^2.4.1",
-    "typescript": "^4.9.4"
+    "tslib": "^2.5.0",
+    "typescript": "^5.0.2"
   },
   "resolutions": {
     "**/@typescript-eslint/eslint-plugin": "^5.48.1",
