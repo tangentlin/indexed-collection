@@ -32,7 +32,7 @@ export class SignalObserver implements ISignalObserver {
     const types = this.handlerToTypeMap.get(handler) ?? new Set();
     types.add(type);
     // @ts-ignore
-    this.handlerToTypeMap.set(handler, type);
+    this.handlerToTypeMap.set(handler, types);
   }
 
   unregisterObserver<T extends Signal>(
