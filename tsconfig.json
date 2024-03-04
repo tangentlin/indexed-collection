@@ -1,6 +1,11 @@
 {
   // see https://www.typescriptlang.org/tsconfig to better understand tsconfigs
-  "include": ["src", "types"],
+  "include": [
+    "src",
+    "types",
+    "test/internals/InternalList.test.ts",
+    "test/internals/InternalSetList.test.ts"
+  ],
   "compilerOptions": {
     "module": "esnext",
     "target": "ES6",
@@ -32,5 +37,6 @@
     "forceConsistentCasingInFileNames": true,
     // `tsdx build` ignores this option, but it is commonly used when type-checking separately with `tsc`
     "noEmit": true
-  }
+  },
+  "exclude": ["**/*.test.ts"]
 }

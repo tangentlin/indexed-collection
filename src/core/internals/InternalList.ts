@@ -45,4 +45,14 @@ export class InternalList<T> implements IInternalList<T> {
       this.invalidate();
     }
   }
+
+  update(newItem: T, oldItem: T): void {
+    const index: number = this.source.findIndex(
+      listItem => listItem === oldItem
+    );
+    if (index >= 0) {
+      this.source[index] = newItem;
+      this.invalidate();
+    }
+  }
 }

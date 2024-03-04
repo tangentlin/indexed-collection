@@ -1,14 +1,14 @@
+import { CollectionNature } from '../core/CollectionNature';
+import { ICollectionOption } from '../core/ICollectionOption';
 import { IIndex } from '../core/IIndex';
-import { IReadonlyCollection } from '../core/IReadonlyCollection';
 import { IMutableCollection } from '../core/IMutableCollection';
+import { IReadonlyCollection } from '../core/IReadonlyCollection';
+import { defaultCollectionOption } from '../core/defaultCollectionOption';
+import { IInternalList } from '../core/internals/IInternalList';
+import { InternalList } from '../core/internals/InternalList';
+import { InternalSetList } from '../core/internals/InternalSetList';
 import { CollectionChangeSignal } from '../signals/CollectionChangeSignal';
 import { SignalObserver } from '../signals/SignalObserver';
-import { ICollectionOption } from '../core/ICollectionOption';
-import { defaultCollectionOption } from '../core/defaultCollectionOption';
-import { CollectionNature } from '../core/CollectionNature';
-import { IInternalList } from '../core/internals/IInternalList';
-import { InternalSetList } from '../core/internals/InternalSetList';
-import { InternalList } from '../core/internals/InternalList';
 
 export abstract class IndexedCollectionBase<T> extends SignalObserver
   implements IMutableCollection<T> {
@@ -85,6 +85,11 @@ export abstract class IndexedCollectionBase<T> extends SignalObserver
     return this._allItemList.exists(item);
   }
 
+  /**
+   * Remove item from the collection
+   * @param item
+   * @returns
+   */
   remove(item: T): boolean {
     if (!this.exists(item)) {
       return false;
@@ -94,6 +99,24 @@ export abstract class IndexedCollectionBase<T> extends SignalObserver
 
     for (const index of this.indexes) {
       index.unIndex(item);
+    }
+    this.notifyChange();
+    return true;
+  }
+
+  update(newItem: T, oldItem: T): boolean {
+    if (!this.exists(oldItem)) {
+      return false;
+    }
+
+    for (const index of this.indexes) {
+      index.unIndex(oldItem);
+    }
+
+    this._allItemList.update(newItem, oldItem);
+
+    for (const index of this.indexes) {
+      index.index(newItem);
     }
     this.notifyChange();
     return true;
