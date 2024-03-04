@@ -43,4 +43,12 @@ export class InternalSetList<T> implements IInternalList<T> {
     this.source.delete(item);
     this.invalidate();
   }
+
+  update(newItem: T, oldItem: T): void {
+    if (this.source.has(oldItem)) {
+      this.source.delete(oldItem);
+      this.source.add(newItem);
+      this.invalidate();
+    }
+  }
 }

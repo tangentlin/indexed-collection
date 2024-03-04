@@ -22,6 +22,13 @@ export interface IInternalList<T> {
    */
   invalidate(): void;
 
+  /**
+   * Update the old item with the new item
+   * @param newItem
+   * @param oldItem
+   */
+  update(newItem: T, oldItem: T): void;
+
   readonly output: readonly T[];
 
   readonly count: number;

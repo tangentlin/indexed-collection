@@ -86,3 +86,32 @@ describe('invalidation test', () => {
     });
   });
 });
+
+interface ITestItem {
+  name: string;
+  age: number;
+}
+
+describe('update tests', () => {
+  const john = { name: 'John', age: 20 };
+  const mike = { name: 'Mike', age: 21 };
+  const vincent = { name: 'Vincent', age: 22 };
+  const miketNew = { name: 'Mike', age: 22 };
+  const peter = { name: 'Peter', age: 18 };
+  const peterNew = { name: 'Peter', age: 19 };
+  let list: InternalList<ITestItem>;
+  beforeEach(() => {
+    const source = [john, mike, vincent];
+    list = new InternalList<ITestItem>(source);
+  });
+
+  test('Update Mike should replace Mike without changing position', () => {
+    list.update(miketNew, mike);
+    expect(list.output).toEqual([john, miketNew, vincent]);
+  });
+
+  test('Update Peter should not change the list', () => {
+    list.update(peterNew, peter);
+    expect(list.output).toEqual([john, mike, vincent]);
+  });
+});
