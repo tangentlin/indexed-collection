@@ -2,6 +2,7 @@ import {
   CollectionIndex,
   ICollectionOption,
   MultipleKeyExtract,
+  buildMultipleKeyExtract,
 } from '../../src';
 import { AttributeTag, ICar } from './data';
 
@@ -44,9 +45,7 @@ export const getByTagIndex = (option?: ICollectionOption) => {
   return new CollectionIndex<ICar, [AttributeTag]>([tagsExtract], option);
 };
 export const getByTagByPriceRangeIndex = (option?: ICollectionOption) => {
-  const tagsExtract: MultipleKeyExtract<ICar, AttributeTag> = (car: ICar) =>
-    car.tags;
-  tagsExtract.isMultiple = true;
+  const tagsExtract = buildMultipleKeyExtract((car: ICar) => car.tags);
   return new CollectionIndex<ICar, [AttributeTag, string]>(
     [tagsExtract, byPriceRangeExtract],
     option

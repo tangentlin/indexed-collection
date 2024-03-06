@@ -1,6 +1,6 @@
 {
   "name": "indexed-collection",
-  "version": "1.4.0",
+  "version": "1.5.0",
   "description": "A zero-dependency library of classes that make filtering, sorting and observing changes to arrays easier and more efficient.",
   "license": "MIT",
   "keywords": [

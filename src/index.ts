@@ -1,3 +1,4 @@
+export * from './builders';
 export { CollectionViewBase } from './collections/CollectionViewBase';
 export { IndexedCollectionBase } from './collections/IndexedCollectionBase';
 export { PrimaryKeyCollection } from './collections/PrimaryKeyCollection';
