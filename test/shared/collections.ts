@@ -1,5 +1,6 @@
 import {
   CollectionIndex,
+  CollectionViewBase,
   ICollectionOption,
   IndexedCollectionBase,
 } from '../../src';
@@ -57,5 +58,42 @@ export class CarCollection extends IndexedCollectionBase<ICar> {
 
   byTagByPriceRange(tag: AttributeTag, priceRange: string): readonly ICar[] {
     return this.byTagByPriceRangeIndex.getValue(tag, priceRange);
+  }
+}
+
+export class UsedCarCollectionView extends CollectionViewBase<
+  ICar,
+  CarCollection
+> {
+  constructor(source: CarCollection) {
+    super(source, {
+      filter: (car) => !car.isNew,
+    });
+  }
+
+  byMake(make: string): readonly ICar[] {
+    return super.applyFilterAndSort(this.source.byMake(make));
+  }
+
+  byIsNew(isNew: boolean): readonly ICar[] {
+    return super.applyFilterAndSort(this.source.byIsNew(isNew));
+  }
+}
+
+/**
+ * Nested view that's based on UsedCarCollection
+ */
+export class UsedGasCarCollectionView extends CollectionViewBase<
+  ICar,
+  UsedCarCollectionView
+> {
+  constructor(source: UsedCarCollectionView) {
+    super(source, {
+      filter: (car) => car.tags.includes(AttributeTag.Gas),
+    });
+  }
+
+  byMake(make: string): readonly ICar[] {
+    return super.applyFilterAndSort(this.source.byMake(make));
   }
 }
