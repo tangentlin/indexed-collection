@@ -1,4 +1,5 @@
 import { CollectionNature } from '../core/CollectionNature';
+import { ICollectionChangeDetail } from '../core/ICollectionChangeDetail';
 import { ICollectionOption } from '../core/ICollectionOption';
 import { IIndex } from '../core/IIndex';
 import { IMutableCollection } from '../core/IMutableCollection';
@@ -7,8 +8,12 @@ import { defaultCollectionOption } from '../core/defaultCollectionOption';
 import { IInternalList } from '../core/internals/IInternalList';
 import { InternalList } from '../core/internals/InternalList';
 import { InternalSetList } from '../core/internals/InternalSetList';
+import { CollectionAddSignal } from '../signals/CollectionAddSignal';
 import { CollectionChangeSignal } from '../signals/CollectionChangeSignal';
+import { CollectionRemoveSignal } from '../signals/CollectionRemoveSignal';
+import { CollectionUpdateSignal } from '../signals/CollectionUpdateSignal';
 import { SignalObserver } from '../signals/SignalObserver';
+import { mergeCollectionChangeDetail } from './util';
 
 export abstract class IndexedCollectionBase<T>
   extends SignalObserver
@@ -20,6 +25,7 @@ export abstract class IndexedCollectionBase<T>
 
   private _pauseChangeSignal: boolean = false;
   private _hasPendingChangeSignal: boolean = false;
+  private _pendingChange: Partial<ICollectionChangeDetail<T>> = {};
 
   public readonly option: Readonly<ICollectionOption>;
 
@@ -83,17 +89,15 @@ export abstract class IndexedCollectionBase<T>
     for (const index of this.indexes) {
       index.index(item);
     }
-    this.notifyChange();
+    this.notifyChange({
+      added: [item],
+    });
     return true;
   }
 
   public addRange(
     items: readonly T[] | IReadonlyCollection<T> | ReadonlySet<T>
   ): boolean[] {
-    // const rawItems: readonly T[] = Array.isArray(items)
-    //   ? items
-    //   : (items as IReadonlyCollection<T>).items;
-
     let rawItems: Readonly<Iterable<T>>;
     if (Array.isArray(items)) {
       rawItems = items;
@@ -131,7 +135,9 @@ export abstract class IndexedCollectionBase<T>
     for (const index of this.indexes) {
       index.unIndex(item);
     }
-    this.notifyChange();
+    this.notifyChange({
+      removed: [item],
+    });
     return true;
   }
 
@@ -149,7 +155,9 @@ export abstract class IndexedCollectionBase<T>
     for (const index of this.indexes) {
       index.index(newItem);
     }
-    this.notifyChange();
+    this.notifyChange({
+      updated: [{ oldValue: oldItem, newValue: newItem }],
+    });
     return true;
   }
 
@@ -161,12 +169,30 @@ export abstract class IndexedCollectionBase<T>
     return this._allItemList.count;
   }
 
-  protected notifyChange(): void {
+  protected notifyChange(change: Partial<ICollectionChangeDetail<T>>): void {
     if (this._pauseChangeSignal) {
       this._hasPendingChangeSignal = true;
+      this._pendingChange = mergeCollectionChangeDetail(
+        this._pendingChange,
+        change
+      );
       return;
     }
-    this.notifyObservers(new CollectionChangeSignal(this));
+
+    const changes = mergeCollectionChangeDetail({}, change);
+    this.notifyObservers(new CollectionChangeSignal(this, changes));
+
+    if (changes.added.length > 0) {
+      this.notifyObservers(new CollectionAddSignal(this, changes.added));
+    }
+
+    if (changes.removed.length > 0) {
+      this.notifyObservers(new CollectionRemoveSignal(this, changes.removed));
+    }
+
+    if (changes.updated.length > 0) {
+      this.notifyObservers(new CollectionUpdateSignal(this, changes.updated));
+    }
   }
 
   /**
@@ -194,7 +220,8 @@ export abstract class IndexedCollectionBase<T>
       this._pauseChangeSignal = false;
       if (this._hasPendingChangeSignal) {
         this._hasPendingChangeSignal = false;
-        this.notifyChange();
+        this.notifyChange(this._pendingChange);
+        this._pendingChange = {};
       }
     }
   }
