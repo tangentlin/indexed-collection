@@ -1,3 +1,5 @@
+import { CollectionNature } from '../src';
+import { CarCollection } from './shared/collections';
 import {
   allCars,
   AttributeTag,
@@ -11,19 +13,22 @@ import {
   usedTeslaModelX,
 } from './shared/data';
 import { PriceRangeName } from './shared/indexes';
-import { CarCollection } from './shared/collections';
 
 describe('mutable collection tests', () => {
   let cars: CarCollection;
+  let carsArrayCollection: CarCollection;
 
   beforeEach(() => {
     cars = new CarCollection();
-    cars.addRange(allCars);
+    carsArrayCollection = new CarCollection(allCars, {
+      nature: CollectionNature.Array,
+    });
+    cars.addRange(new Set(allCars));
   });
 
   // Tests against index which is only based on one value
   describe('one level index', () => {
-    it('byMake(Tesla) should return all Tesla cars', () => {
+    it('cars.byMake(Tesla) should return all Tesla cars', () => {
       expect(new Set(cars.byMake('Tesla'))).toEqual(
         new Set([
           newTeslaModel3,
@@ -32,6 +37,15 @@ describe('mutable collection tests', () => {
           usedTeslaModelX,
         ])
       );
+    });
+
+    it('carsArrayCollection.byMake(Tesla) should return all Tesla cars', () => {
+      expect(carsArrayCollection.byMake('Tesla')).toEqual([
+        newTeslaModel3,
+        usedTeslaModel3,
+        newTeslaModelX,
+        usedTeslaModelX,
+      ]);
     });
 
     it('byIsNew(true) should return all new cars', () => {
