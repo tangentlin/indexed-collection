@@ -7,7 +7,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        node: ['18.x', '20.x']
+        node: ['20.x']
         os: [ubuntu-latest]
 
     steps:
@@ -27,6 +27,11 @@ jobs:
 
       - name: Test
         run: yarn test --ci --coverage --maxWorkers=2
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v4
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
       - name: Build
         run: yarn build
