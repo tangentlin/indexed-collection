@@ -10,8 +10,10 @@ import { InternalSetList } from '../core/internals/InternalSetList';
 import { CollectionChangeSignal } from '../signals/CollectionChangeSignal';
 import { SignalObserver } from '../signals/SignalObserver';
 
-export abstract class IndexedCollectionBase<T> extends SignalObserver
-  implements IMutableCollection<T> {
+export abstract class IndexedCollectionBase<T>
+  extends SignalObserver
+  implements IMutableCollection<T>
+{
   private _allItemList: IInternalList<T> = new InternalSetList<T>(new Set());
 
   protected indexes: Set<IIndex<T>> = new Set();
@@ -56,8 +58,19 @@ export abstract class IndexedCollectionBase<T> extends SignalObserver
     }
   }
 
-  protected buildIndexes(indexes: readonly IIndex<T>[] = []): void {
+  /**
+   * Rebuild indexes
+   * @param indexes
+   * @param autoReindex if true, all items will be reindexed
+   */
+  protected buildIndexes(
+    indexes: readonly IIndex<T>[],
+    autoReindex: boolean = true
+  ): void {
     this.indexes = new Set(indexes);
+    if (autoReindex) {
+      this.reindex();
+    }
   }
 
   public add(item: T): boolean {
@@ -74,11 +87,29 @@ export abstract class IndexedCollectionBase<T> extends SignalObserver
     return true;
   }
 
-  public addRange(items: readonly T[] | IReadonlyCollection<T>): boolean[] {
-    const rawItems: readonly T[] = Array.isArray(items)
-      ? items
-      : (items as IReadonlyCollection<T>).items;
-    return rawItems.map(item => this.add(item));
+  public addRange(
+    items: readonly T[] | IReadonlyCollection<T> | ReadonlySet<T>
+  ): boolean[] {
+    // const rawItems: readonly T[] = Array.isArray(items)
+    //   ? items
+    //   : (items as IReadonlyCollection<T>).items;
+
+    let rawItems: Readonly<Iterable<T>>;
+    if (Array.isArray(items)) {
+      rawItems = items;
+    } else if (items instanceof Set) {
+      rawItems = Array.from(items);
+    } else {
+      rawItems = (items as IReadonlyCollection<T>).items;
+    }
+
+    this.pauseChangeSignal();
+    let result: boolean[] = [];
+    for (const item of rawItems) {
+      result.push(this.add(item));
+    }
+    this.resumeChangeSignal();
+    return result;
   }
 
   exists(item: T): boolean {

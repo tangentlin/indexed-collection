@@ -3,6 +3,7 @@ module.exports = {
   preset: 'ts-jest',
   testEnvironment: 'node',
   collectCoverage: true,
-  coverageReporters: ['text', 'cobertura'],
+  verbose: true,
+  coverageReporters: ['cobertura', 'html', 'lcov'],
   testTimeout: 500,
 };
