@@ -1,48 +1,15 @@
-import { CollectionViewBase } from '../src';
+import {
+  CarCollection,
+  UsedCarCollectionView,
+  UsedGasCarCollectionView,
+} from './shared/collections';
 import {
   allCars,
-  AttributeTag,
-  ICar,
   usedChevyCamero,
   usedChevyEquinox,
   usedTeslaModel3,
   usedTeslaModelX,
 } from './shared/data';
-import { CarCollection } from './shared/collections';
-
-class UsedCarCollectionView extends CollectionViewBase<ICar, CarCollection> {
-  constructor(source: CarCollection) {
-    super(source, {
-      filter: car => !car.isNew,
-    });
-  }
-
-  byMake(make: string): readonly ICar[] {
-    return super.applyFilterAndSort(this.source.byMake(make));
-  }
-
-  byIsNew(isNew: boolean): readonly ICar[] {
-    return super.applyFilterAndSort(this.source.byIsNew(isNew));
-  }
-}
-
-/**
- * Nested view that's based on UsedCarCollection
- */
-class UsedGasCarCollectionView extends CollectionViewBase<
-  ICar,
-  UsedCarCollectionView
-> {
-  constructor(source: UsedCarCollectionView) {
-    super(source, {
-      filter: car => car.tags.includes(AttributeTag.Gas),
-    });
-  }
-
-  byMake(make: string): readonly ICar[] {
-    return super.applyFilterAndSort(this.source.byMake(make));
-  }
-}
 
 describe('collection view tests', () => {
   let cars: CarCollection;
