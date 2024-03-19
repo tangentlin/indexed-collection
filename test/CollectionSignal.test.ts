@@ -8,6 +8,7 @@ import {
   newTeslaModel3,
   newTeslaModelX,
   usedChevyCamero,
+  usedTeslaModel3,
 } from './shared/data';
 
 describe('Collection signal tests', () => {
@@ -114,6 +115,24 @@ describe('Collection signal tests', () => {
 
     test('Should trigger no update signal in view', () => {
       expect(updateViewSignal).toHaveBeenCalledTimes(0);
+    });
+
+    describe('When unregister add signal', () => {
+      beforeEach(() => {
+        changeViewSignal.mockClear();
+        changeSignal.mockClear();
+        carCollection.unregisterObserver(changeSignal);
+        usedCarCollection.unregisterObserver(changeViewSignal);
+        carCollection.add(usedTeslaModel3);
+      });
+
+      test("should not trigger collection's change signal", () => {
+        expect(changeSignal).toHaveBeenCalledTimes(0);
+      });
+
+      test("should not trigger view's change signal", () => {
+        expect(changeViewSignal).toHaveBeenCalledTimes(0);
+      });
     });
   });
 });

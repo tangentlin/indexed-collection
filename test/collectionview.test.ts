@@ -1,9 +1,11 @@
+import { CollectionViewBase } from '../src';
 import {
   CarCollection,
   UsedCarCollectionView,
   UsedGasCarCollectionView,
 } from './shared/collections';
 import {
+  ICar,
   allCars,
   usedChevyCamero,
   usedChevyEquinox,
@@ -11,17 +13,34 @@ import {
   usedTeslaModelX,
 } from './shared/data';
 
+/**
+ * View with out any filter or sort set
+ */
+class DefaultView extends CollectionViewBase<ICar, CarCollection> {
+  constructor(source: CarCollection) {
+    super(source);
+  }
+}
+
 describe('collection view tests', () => {
   let cars: CarCollection;
   let usedCars: UsedCarCollectionView;
   let usedGasCars: UsedGasCarCollectionView;
+  let defaultView: DefaultView;
 
   beforeEach(() => {
     cars = new CarCollection();
     cars.addRange(allCars);
 
+    defaultView = new DefaultView(cars);
     usedCars = new UsedCarCollectionView(cars);
     usedGasCars = new UsedGasCarCollectionView(usedCars);
+  });
+
+  describe('DefaultView', () => {
+    it('defaultView has same number of items as collection', () => {
+      expect(defaultView.count).toEqual(cars.count);
+    });
   });
 
   // Tests against index which is only based on one value
@@ -68,6 +87,14 @@ describe('collection view tests', () => {
       expect(new Set(usedCars.byMake('Tesla'))).toEqual(
         new Set([usedTeslaModelX])
       );
+    });
+
+    it('exist should return false with the removed car', () => {
+      expect(usedCars.exists(usedTeslaModel3)).toEqual(false);
+    });
+
+    it('exist should return true with cars not removed', () => {
+      expect(usedCars.exists(usedTeslaModelX)).toEqual(true);
     });
   });
 });
