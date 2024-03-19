@@ -1,13 +1,17 @@
+import { ICollectionAndView } from '../core/ICollectionAndView';
+import { ICollectionViewOption } from '../core/ICollectionViewOption';
 import { IReadonlyCollection } from '../core/IReadonlyCollection';
 import { Optional } from '../core/Optional';
-import { CollectionChangeSignal } from '../signals/CollectionChangeSignal';
-import { SignalObserver } from '../signals/SignalObserver';
-import { ICollectionViewOption } from '../core/ICollectionViewOption';
 import {
-  defaultSort,
   defaultCollectionViewOption,
+  defaultSort,
 } from '../core/defaultCollectionViewOption';
-import { ICollectionAndView } from '../core/ICollectionAndView';
+import { CollectionAddSignal } from '../signals/CollectionAddSignal';
+import { CollectionChangeSignal } from '../signals/CollectionChangeSignal';
+import { CollectionRemoveSignal } from '../signals/CollectionRemoveSignal';
+import { CollectionUpdateSignal } from '../signals/CollectionUpdateSignal';
+import { SignalObserver } from '../signals/SignalObserver';
+import { filterCollectionChangeDetail } from './util';
 
 /**
  * CollectionView is a view onto a collection of data.  Most common use case would be
@@ -15,9 +19,12 @@ import { ICollectionAndView } from '../core/ICollectionAndView';
  * without modifying the underlying data.
  */
 export abstract class CollectionViewBase<
-  T,
-  SourceCollectionT extends ICollectionAndView<T>
-> extends SignalObserver implements IReadonlyCollection<T> {
+    T,
+    SourceCollectionT extends ICollectionAndView<T>
+  >
+  extends SignalObserver
+  implements IReadonlyCollection<T>
+{
   private readonly _source: SourceCollectionT;
   private readonly _option: ICollectionViewOption<T>;
   private _cachedItems: T[] = [];
@@ -66,13 +73,35 @@ export abstract class CollectionViewBase<
     return this.filter(item) ? item : undefined;
   }
 
-  protected source_onChange(): void {
+  protected source_onChange(signal: CollectionChangeSignal<T>): void {
     this.rebuildCache();
-    this.notifyChange();
+    this.notifyChange(signal);
   }
 
-  public notifyChange(): void {
-    this.notifyObservers(new CollectionChangeSignal(this));
+  public notifyChange(signal: CollectionChangeSignal<T>): void {
+    const changes = filterCollectionChangeDetail(signal.detail, this.filter);
+
+    const addedCount = changes.added.length;
+    const removedCount = changes.removed.length;
+    const updatedCount = changes.updated.length;
+
+    if (addedCount === 0 && removedCount === 0 && updatedCount === 0) {
+      return;
+    }
+
+    this.notifyObservers(new CollectionChangeSignal(this, changes));
+
+    if (addedCount > 0) {
+      this.notifyObservers(new CollectionAddSignal(this, changes.added));
+    }
+
+    if (removedCount > 0) {
+      this.notifyObservers(new CollectionRemoveSignal(this, changes.removed));
+    }
+
+    if (updatedCount > 0) {
+      this.notifyObservers(new CollectionUpdateSignal(this, changes.updated));
+    }
   }
 
   get count(): number {
