@@ -28,6 +28,21 @@ export class PrimaryKeyCollection<
     }
   }
 
+  protected override buildIndexes(
+    indexes: readonly IIndex<T>[],
+    autoReindex?: boolean
+  ): void {
+    const combinedIndex: IIndex<T>[] = [];
+    if (this.idIndex != null) {
+      // this.idIndex can be null during instantiation
+      combinedIndex.push(this.idIndex);
+    }
+    if (indexes != null && indexes.length > 0) {
+      combinedIndex.push(...indexes);
+    }
+    super.buildIndexes(combinedIndex, autoReindex);
+  }
+
   exists(item: T): boolean {
     const key = this.primaryKeyExtract(item);
     return Boolean(this.byPrimaryKey(key));

@@ -1,46 +1,24 @@
 import { CollectionViewBase } from '../src';
 import {
-  allCars,
-  AttributeTag,
+  CarCollection,
+  UsedCarCollectionView,
+  UsedGasCarCollectionView,
+} from './shared/collections';
+import {
   ICar,
+  allCars,
   usedChevyCamero,
   usedChevyEquinox,
   usedTeslaModel3,
   usedTeslaModelX,
 } from './shared/data';
-import { CarCollection } from './shared/collections';
-
-class UsedCarCollectionView extends CollectionViewBase<ICar, CarCollection> {
-  constructor(source: CarCollection) {
-    super(source, {
-      filter: car => !car.isNew,
-    });
-  }
-
-  byMake(make: string): readonly ICar[] {
-    return super.applyFilterAndSort(this.source.byMake(make));
-  }
-
-  byIsNew(isNew: boolean): readonly ICar[] {
-    return super.applyFilterAndSort(this.source.byIsNew(isNew));
-  }
-}
 
 /**
- * Nested view that's based on UsedCarCollection
+ * View with out any filter or sort set
  */
-class UsedGasCarCollectionView extends CollectionViewBase<
-  ICar,
-  UsedCarCollectionView
-> {
-  constructor(source: UsedCarCollectionView) {
-    super(source, {
-      filter: car => car.tags.includes(AttributeTag.Gas),
-    });
-  }
-
-  byMake(make: string): readonly ICar[] {
-    return super.applyFilterAndSort(this.source.byMake(make));
+class DefaultView extends CollectionViewBase<ICar, CarCollection> {
+  constructor(source: CarCollection) {
+    super(source);
   }
 }
 
@@ -48,13 +26,21 @@ describe('collection view tests', () => {
   let cars: CarCollection;
   let usedCars: UsedCarCollectionView;
   let usedGasCars: UsedGasCarCollectionView;
+  let defaultView: DefaultView;
 
   beforeEach(() => {
     cars = new CarCollection();
     cars.addRange(allCars);
 
+    defaultView = new DefaultView(cars);
     usedCars = new UsedCarCollectionView(cars);
     usedGasCars = new UsedGasCarCollectionView(usedCars);
+  });
+
+  describe('DefaultView', () => {
+    it('defaultView has same number of items as collection', () => {
+      expect(defaultView.count).toEqual(cars.count);
+    });
   });
 
   // Tests against index which is only based on one value
@@ -101,6 +87,14 @@ describe('collection view tests', () => {
       expect(new Set(usedCars.byMake('Tesla'))).toEqual(
         new Set([usedTeslaModelX])
       );
+    });
+
+    it('exist should return false with the removed car', () => {
+      expect(usedCars.exists(usedTeslaModel3)).toEqual(false);
+    });
+
+    it('exist should return true with cars not removed', () => {
+      expect(usedCars.exists(usedTeslaModelX)).toEqual(true);
     });
   });
 });
