@@ -5,5 +5,6 @@ module.exports = {
   collectCoverage: true,
   verbose: true,
   coverageReporters: ['cobertura', 'html', 'lcov'],
+  coveragePathIgnorePatterns: ['index.ts$'],
   testTimeout: 500,
 };
