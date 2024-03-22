@@ -121,4 +121,18 @@ describe('mutable collection tests', () => {
       );
     });
   });
+
+  describe('move', () => {
+    beforeEach(() => {
+      carsArrayCollection.moveBefore(usedTeslaModel3, newTeslaModelX);
+    });
+
+    it('The number of items in the list have not changed', () => {
+      expect(carsArrayCollection.count).toEqual(allCars.length);
+    });
+
+    it('The order of the cars has changed', () => {
+      expect(carsArrayCollection.items).not.toEqual(allCars);
+    });
+  });
 });
