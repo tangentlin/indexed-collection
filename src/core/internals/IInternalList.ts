@@ -29,6 +29,20 @@ export interface IInternalList<T> {
    */
   update(newItem: T, oldItem: T): void;
 
+  /**
+   * Move the item before another item
+   * @param item
+   * @param before
+   */
+  moveBefore(item: T, before: T): void;
+
+  /**
+   * Move the item after another item
+   * @param item
+   * @param after
+   */
+  moveAfter(item: T, after: T): void;
+
   readonly output: readonly T[];
 
   readonly count: number;

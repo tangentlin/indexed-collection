@@ -46,6 +46,27 @@ describe('invalidation test', () => {
         expect(list.output).not.toBe(outputBefore);
       });
     });
+
+    describe('moveBefore', () => {
+      beforeEach(() => {
+        list.moveBefore(7, 6);
+      });
+
+      test('source reorder the number according to the move', () => {
+        expect(list.source).toEqual([1, 7, 6]);
+      });
+    });
+
+    describe('moveAfter', () => {
+      beforeEach(() => {
+        list.moveAfter(1, 6);
+      });
+
+      test('source reorder the number according to the move', () => {
+        console.log(list.source);
+        expect(list.source).toEqual([6, 1, 7]);
+      });
+    });
   });
 
   describe('direct source mutation - invalidate should generate a new list after changes', () => {

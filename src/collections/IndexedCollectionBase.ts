@@ -161,6 +161,24 @@ export abstract class IndexedCollectionBase<T>
     return true;
   }
 
+  /**
+   * Move item before the specified item
+   * @param item The item to move
+   * @param before
+   */
+  moveBefore(item: T, before: T): void {
+    this._allItemList.moveBefore(item, before);
+  }
+
+  /**
+   * Move item after the specified item
+   * @param item The item to move
+   * @param after
+   */
+  moveAfter(item: T, after: T): void {
+    this._allItemList.moveAfter(item, after);
+  }
+
   get items(): readonly T[] {
     return this._allItemList.output;
   }

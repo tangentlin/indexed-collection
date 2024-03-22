@@ -51,4 +51,14 @@ export class InternalSetList<T> implements IInternalList<T> {
       this.invalidate();
     }
   }
+
+  moveBefore(_item: T, _before: T): void {
+    // There is no concept of order in a set
+    return;
+  }
+
+  moveAfter(_item: T, _after: T): void {
+    // There is no concept of order in a set
+    return;
+  }
 }
