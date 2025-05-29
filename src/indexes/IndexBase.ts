@@ -135,6 +135,7 @@ function removeItemFromMap<T>(key: unknown, item: T, map: LeafMap<T>): boolean {
   const items = map.get(key) as IInternalList<T>;
   if (items.exists(item)) {
     items.remove(item);
+    return true;
   }
   return false;
 }
