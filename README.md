@@ -33,10 +33,10 @@ The community want to keep statistics by gender initially for everybody. Let's b
 that indexes on gender
 
 ```JavaScript
-import { IndexedCollectionBase, CollectionIndex, CollectionViewBase } from 'indexed-colection';
+import { IndexedCollectionBase, CollectionIndex, CollectionViewBase } from 'indexed-collection';
 
 class PeopleCollection extends IndexedCollectionBase {
-  construtor() {
+  constructor() {
     super();
     this.genderIndex = new CollectionIndex([(person) => person.gender]);
     this.buildIndexes([
