@@ -67,6 +67,16 @@ describe('invalidation test', () => {
         expect(list.source).toEqual([6, 1, 7]);
       });
     });
+
+    describe('moveAfter when item is after the reference', () => {
+      beforeEach(() => {
+        list.moveAfter(7, 1);
+      });
+
+      test('source reorder the number according to the move', () => {
+        expect(list.source).toEqual([1, 7, 6]);
+      });
+    });
   });
 
   describe('direct source mutation - invalidate should generate a new list after changes', () => {

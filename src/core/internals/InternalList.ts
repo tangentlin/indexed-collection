@@ -79,9 +79,11 @@ export class InternalList<T> implements IInternalList<T> {
     const afterIndex: number = this.source.findIndex(
       (listItem) => listItem === after
     );
+
     if (itemIndex >= 0 && afterIndex >= 0) {
       this.source.splice(itemIndex, 1);
-      this.source.splice(afterIndex, 0, item);
+      const targetIndex = itemIndex < afterIndex ? afterIndex : afterIndex + 1;
+      this.source.splice(targetIndex, 0, item);
       this.invalidate();
     }
   }
