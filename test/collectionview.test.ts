@@ -56,7 +56,7 @@ describe('collection view tests', () => {
     });
 
     it('usedGasCars.byMake(Chevy) should return all used Chevy', () => {
-      expect(new Set(usedCars.byMake('Chevy'))).toEqual(
+      expect(new Set(usedGasCars.byMake('Chevy'))).toEqual(
         new Set([usedChevyCamero, usedChevyEquinox])
       );
     });
