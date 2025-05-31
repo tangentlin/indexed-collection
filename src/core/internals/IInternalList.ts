@@ -18,7 +18,7 @@ export interface IInternalList<T> {
   exists(item: T): boolean;
 
   /**
-   * Signal the list has
+   * Signal that the list has changed so cached output should be regenerated.
    */
   invalidate(): void;
 
