@@ -24,7 +24,15 @@
   },
   "homepage": "https://github.com/tangentlin/indexed-collection#readme",
   "main": "dist/index.js",
-  "typings": "dist/index.d.ts",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "require": "./dist/index.js",
+      "import": "./dist/index.mjs",
+      "types": "./dist/index.d.ts"
+    }
+  },
   "files": [
     "dist",
     "src"
@@ -34,11 +42,11 @@
   },
   "scripts": {
     "analyze": "size-limit --why",
-    "build": "dts build",
+    "build": "rolldown -c",
     "lint": "exit 0",
-    "prepare": "dts build",
+    "prepare": "rolldown -c",
     "size": "size-limit",
-    "start": "dts watch",
+    "start": "rolldown -w",
     "test": "dts test",
     "prettier": "prettier --write -c src test"
   },
@@ -53,20 +61,20 @@
     "singleQuote": true,
     "trailingComma": "es5"
   },
-  "module": "dist/indexed-collection.esm.js",
   "size-limit": [
     {
-      "path": "dist/indexed-collection.cjs.production.min.js",
+      "path": "dist/index.js",
       "limit": "10 KB"
     },
     {
-      "path": "dist/indexed-collection.esm.js",
+      "path": "dist/index.mjs",
       "limit": "10 KB"
     }
   ],
   "devDependencies": {
     "@size-limit/preset-small-lib": "^11.0.2",
     "dts-cli": "^2.0.4",
+    "rolldown": "^0.3.0",
     "size-limit": "^11.0.2",
     "tslib": "^2.6.2",
     "typescript": "^5.3.3"
