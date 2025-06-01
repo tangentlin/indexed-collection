@@ -13,12 +13,10 @@ import { CollectionChangeSignal } from '../signals/CollectionChangeSignal';
 import { CollectionRemoveSignal } from '../signals/CollectionRemoveSignal';
 import { CollectionUpdateSignal } from '../signals/CollectionUpdateSignal';
 import { SignalObserver } from '../signals/SignalObserver';
+
 import { mergeCollectionChangeDetail } from './util';
 
-export abstract class IndexedCollectionBase<T>
-  extends SignalObserver
-  implements IMutableCollection<T>
-{
+export abstract class IndexedCollectionBase<T> extends SignalObserver implements IMutableCollection<T> {
   private _allItemList: IInternalList<T> = new InternalSetList<T>(new Set());
 
   protected indexes: Set<IIndex<T>> = new Set();
@@ -69,10 +67,7 @@ export abstract class IndexedCollectionBase<T>
    * @param indexes
    * @param autoReindex if true, all items will be reindexed
    */
-  protected buildIndexes(
-    indexes: readonly IIndex<T>[],
-    autoReindex: boolean = true
-  ): void {
+  protected buildIndexes(indexes: readonly IIndex<T>[], autoReindex: boolean = true): void {
     this.indexes = new Set(indexes);
     if (autoReindex) {
       this.reindex();
@@ -95,9 +90,7 @@ export abstract class IndexedCollectionBase<T>
     return true;
   }
 
-  public addRange(
-    items: readonly T[] | IReadonlyCollection<T> | ReadonlySet<T>
-  ): boolean[] {
+  public addRange(items: readonly T[] | IReadonlyCollection<T> | ReadonlySet<T>): boolean[] {
     let rawItems: Readonly<Iterable<T>>;
     if (Array.isArray(items)) {
       rawItems = items;
@@ -108,7 +101,7 @@ export abstract class IndexedCollectionBase<T>
     }
 
     this.pauseChangeSignal();
-    let result: boolean[] = [];
+    const result: boolean[] = [];
     for (const item of rawItems) {
       result.push(this.add(item));
     }
@@ -190,10 +183,7 @@ export abstract class IndexedCollectionBase<T>
   protected notifyChange(change: Partial<ICollectionChangeDetail<T>>): void {
     if (this._pauseChangeSignal) {
       this._hasPendingChangeSignal = true;
-      this._pendingChange = mergeCollectionChangeDetail(
-        this._pendingChange,
-        change
-      );
+      this._pendingChange = mergeCollectionChangeDetail(this._pendingChange, change);
       return;
     }
 

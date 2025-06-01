@@ -1,0 +1,44 @@
+name: Publish Packages on Release
+
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Setup
+        uses: ./.github/actions/builderui-setup
+
+      - name: Extract version from release tag
+        id: get_version
+        run: |
+          # Assuming the tag is like "v0.56.0"
+          VERSION=${GITHUB_REF#refs/tags/v}
+          echo "VERSION=${VERSION}" >> $GITHUB_ENV
+          echo "Determined version: $VERSION"
+
+      - name: Update package versions
+        run: |
+          # This command updates all packages to the new version
+          pnpm -r version $VERSION --no-git-tag-version
+
+      - name: Build packages
+        run: pnpm bumpVersion $VERSION
+
+      - name: Publish packages
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          echo "//registry.npmjs.org/:_authToken=${NODE_AUTH_TOKEN}" > ~/.npmrc
+          # Publish each package in the monorepo (customize as needed)
+          ./publish.sh
+          rm ~/.npmrc
+

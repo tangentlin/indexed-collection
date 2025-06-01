@@ -2,15 +2,13 @@ import { ICollectionAndView } from '../core/ICollectionAndView';
 import { ICollectionViewOption } from '../core/ICollectionViewOption';
 import { IReadonlyCollection } from '../core/IReadonlyCollection';
 import { Optional } from '../core/Optional';
-import {
-  defaultCollectionViewOption,
-  defaultSort,
-} from '../core/defaultCollectionViewOption';
+import { defaultCollectionViewOption, defaultSort } from '../core/defaultCollectionViewOption';
 import { CollectionAddSignal } from '../signals/CollectionAddSignal';
 import { CollectionChangeSignal } from '../signals/CollectionChangeSignal';
 import { CollectionRemoveSignal } from '../signals/CollectionRemoveSignal';
 import { CollectionUpdateSignal } from '../signals/CollectionUpdateSignal';
 import { SignalObserver } from '../signals/SignalObserver';
+
 import { filterCollectionChangeDetail } from './util';
 
 /**
@@ -18,10 +16,7 @@ import { filterCollectionChangeDetail } from './util';
  * having the collection reduced by filter and/or sorted according to various criteria
  * without modifying the underlying data.
  */
-export abstract class CollectionViewBase<
-    T,
-    SourceCollectionT extends ICollectionAndView<T>
-  >
+export abstract class CollectionViewBase<T, SourceCollectionT extends ICollectionAndView<T>>
   extends SignalObserver
   implements IReadonlyCollection<T>
 {
@@ -37,10 +32,7 @@ export abstract class CollectionViewBase<
     this._source = source;
     this._option = Object.assign({}, defaultCollectionViewOption, option);
     this.rebuildCache();
-    this._source.registerObserver(
-      CollectionChangeSignal.type,
-      this.source_onChange.bind(this)
-    );
+    this._source.registerObserver(CollectionChangeSignal.type, this.source_onChange.bind(this));
   }
 
   /**
@@ -60,9 +52,7 @@ export abstract class CollectionViewBase<
 
   protected applyFilterAndSort(list: readonly T[]): T[] {
     const filtered: T[] =
-      this._option.filter === defaultCollectionViewOption.filter
-        ? [...list]
-        : list.filter(this._option.filter);
+      this._option.filter === defaultCollectionViewOption.filter ? [...list] : list.filter(this._option.filter);
     return this.sort === defaultSort ? filtered : filtered.sort(this.sort);
   }
 

@@ -1,10 +1,10 @@
 export { CollectionNature } from './CollectionNature';
-export { ICollectionOption } from './ICollectionOption';
-export { ICollectionViewOption } from './ICollectionViewOption';
-export { IMutableCollection } from './IMutableCollection';
-export { IReadonlyCollection } from './IReadonlyCollection';
-export { KeyExtract, MultipleKeyExtract, SingleKeyExtract } from './KeyExtract';
-export { Nullable, Optional } from './Optional';
+export { type ICollectionOption } from './ICollectionOption';
+export { type ICollectionViewOption } from './ICollectionViewOption';
+export { type IMutableCollection } from './IMutableCollection';
+export { type IReadonlyCollection } from './IReadonlyCollection';
+export { type KeyExtract, type MultipleKeyExtract, type SingleKeyExtract } from './KeyExtract';
+export { type Nullable, type Optional } from './Optional';
 export { defaultCollectionOption } from './defaultCollectionOption';
 export {
   defaultFilter as defaultCollectionViewFilter,

@@ -1,10 +1,10 @@
-import { KeyExtract } from '../core/KeyExtract';
-import { ICollectionOption } from '../core/ICollectionOption';
-import { defaultCollectionOption } from '../core/defaultCollectionOption';
 import { CollectionNature } from '../core/CollectionNature';
+import { ICollectionOption } from '../core/ICollectionOption';
+import { KeyExtract } from '../core/KeyExtract';
+import { defaultCollectionOption } from '../core/defaultCollectionOption';
 import { IInternalList } from '../core/internals/IInternalList';
-import { InternalSetList } from '../core/internals/InternalSetList';
 import { InternalList } from '../core/internals/InternalList';
+import { InternalSetList } from '../core/internals/InternalSetList';
 
 const emptyArray = Object.freeze([]);
 
@@ -21,9 +21,7 @@ export abstract class IndexBase<T> {
     option: Readonly<ICollectionOption> = defaultCollectionOption
   ) {
     this._keyFns = keyFns;
-    this.option = Object.freeze(
-      Object.assign({}, defaultCollectionOption, option)
-    );
+    this.option = Object.freeze(Object.assign({}, defaultCollectionOption, option));
   }
 
   index(item: T): boolean {
@@ -110,12 +108,7 @@ function getNewInternalList<T>(isUsingSet: boolean): IInternalList<T> {
   return isUsingSet ? new InternalSetList(new Set()) : new InternalList([]);
 }
 
-function addItemToMap<T>(
-  key: unknown,
-  item: T,
-  map: LeafMap<T>,
-  isUsingSet: boolean
-): boolean {
+function addItemToMap<T>(key: unknown, item: T, map: LeafMap<T>, isUsingSet: boolean): boolean {
   if (!map.has(key)) {
     const content: IInternalList<T> = getNewInternalList(isUsingSet);
     content.add(item);

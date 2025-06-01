@@ -1,7 +1,10 @@
+import { describe, beforeEach, test, expect, vi, Mock } from 'vitest';
+
 import { CollectionAddSignal } from '../src/signals/CollectionAddSignal';
 import { CollectionChangeSignal } from '../src/signals/CollectionChangeSignal';
 import { CollectionRemoveSignal } from '../src/signals/CollectionRemoveSignal';
 import { CollectionUpdateSignal } from '../src/signals/CollectionUpdateSignal';
+import { SignalHandler } from '../src/signals/ISignalObserver';
 import { CarCollection, UsedCarCollectionView } from './shared/collections';
 import {
   ICar,
@@ -12,29 +15,29 @@ import {
 } from './shared/data';
 
 describe('Collection signal tests', () => {
-  let changeSignal: jest.Mock<CollectionChangeSignal<ICar>>;
-  let addSignal: jest.Mock<CollectionAddSignal<ICar>>;
-  let removeSignal: jest.Mock<CollectionRemoveSignal<ICar>>;
-  let updateSignal: jest.Mock<CollectionUpdateSignal<ICar>>;
+  let changeSignal: Mock<SignalHandler<CollectionChangeSignal<ICar>>>;
+  let addSignal: Mock<SignalHandler<CollectionAddSignal<ICar>>>;
+  let removeSignal: Mock<SignalHandler<CollectionRemoveSignal<ICar>>>;
+  let updateSignal: Mock<SignalHandler<CollectionUpdateSignal<ICar>>>;
 
-  let changeViewSignal: jest.Mock<CollectionChangeSignal<ICar>>;
-  let addViewSignal: jest.Mock<CollectionAddSignal<ICar>>;
-  let removeViewSignal: jest.Mock<CollectionRemoveSignal<ICar>>;
-  let updateViewSignal: jest.Mock<CollectionUpdateSignal<ICar>>;
+  let changeViewSignal: Mock<SignalHandler<CollectionChangeSignal<ICar>>>;
+  let addViewSignal: Mock<SignalHandler<CollectionAddSignal<ICar>>>;
+  let removeViewSignal: Mock<SignalHandler<CollectionRemoveSignal<ICar>>>;
+  let updateViewSignal: Mock<SignalHandler<CollectionUpdateSignal<ICar>>>;
 
   let carCollection: CarCollection;
   let usedCarCollection: UsedCarCollectionView;
 
   beforeEach(() => {
-    changeSignal = jest.fn();
-    addSignal = jest.fn();
-    removeSignal = jest.fn();
-    updateSignal = jest.fn();
+    changeSignal = vi.fn();
+    addSignal = vi.fn();
+    removeSignal = vi.fn();
+    updateSignal = vi.fn();
 
-    changeViewSignal = jest.fn();
-    addViewSignal = jest.fn();
-    removeViewSignal = jest.fn();
-    updateViewSignal = jest.fn();
+    changeViewSignal = vi.fn();
+    addViewSignal = vi.fn();
+    removeViewSignal = vi.fn();
+    updateViewSignal = vi.fn();
 
     carCollection = new CarCollection([newTeslaModel3]);
     carCollection.registerObserver(CollectionChangeSignal.type, changeSignal);
