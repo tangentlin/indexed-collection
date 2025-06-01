@@ -1,3 +1,4 @@
+import { describe, beforeEach, test, expect } from 'vitest';
 import { InternalList } from '../../src/core/internals/InternalList';
 
 describe('invalidation test', () => {

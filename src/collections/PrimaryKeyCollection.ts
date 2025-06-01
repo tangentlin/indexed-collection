@@ -4,15 +4,13 @@ import { SingleKeyExtract } from '../core/KeyExtract';
 import { Optional } from '../core/Optional';
 import { defaultCollectionOption } from '../core/defaultCollectionOption';
 import { CollectionIndex } from '../indexes/CollectionIndex';
+
 import { IndexedCollectionBase } from './IndexedCollectionBase';
 
 /**
  * A collection where every item contains a unique identifier key (aka primary key)
  */
-export class PrimaryKeyCollection<
-  T,
-  IdT = string
-> extends IndexedCollectionBase<T> {
+export class PrimaryKeyCollection<T, IdT = string> extends IndexedCollectionBase<T> {
   protected readonly idIndex: CollectionIndex<T, [IdT]>;
   constructor(
     public readonly primaryKeyExtract: SingleKeyExtract<T, IdT>,
@@ -28,10 +26,7 @@ export class PrimaryKeyCollection<
     }
   }
 
-  protected override buildIndexes(
-    indexes: readonly IIndex<T>[],
-    autoReindex?: boolean
-  ): void {
+  protected override buildIndexes(indexes: readonly IIndex<T>[], autoReindex?: boolean): void {
     const combinedIndex: IIndex<T>[] = [];
     if (this.idIndex != null) {
       // this.idIndex can be null during instantiation

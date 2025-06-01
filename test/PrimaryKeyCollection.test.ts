@@ -1,3 +1,4 @@
+import { describe, beforeEach, it, expect, test } from 'vitest';
 import { IndexedCollectionBase, PrimaryKeyCollection } from '../src';
 import { ICar, newTeslaModelX } from './shared/data';
 

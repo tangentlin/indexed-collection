@@ -1,6 +1,6 @@
 {
   "name": "indexed-collection",
-  "version": "1.9.0",
+  "version": "2.0.0",
   "description": "A zero-dependency library of classes that make filtering, sorting and observing changes to arrays easier and more efficient.",
   "license": "MIT",
   "keywords": [
@@ -24,51 +24,39 @@
   },
   "homepage": "https://github.com/tangentlin/indexed-collection#readme",
   "main": "dist/index.js",
+  "module": "dist/index.mjs",
   "typings": "dist/index.d.ts",
   "files": [
     "dist",
     "src"
   ],
   "engines": {
-    "node": ">=14"
+    "node": ">=20"
   },
   "scripts": {
-    "analyze": "size-limit --why",
-    "build": "dts build",
-    "lint": "exit 0",
-    "prepare": "dts build",
-    "size": "size-limit",
-    "start": "dts watch",
-    "test": "dts test",
-    "prettier": "prettier --write -c src test"
+    "build": "tsdown",
+    "check:all": "pnpm check:style && pnpm check:lint && pnpm check:type && pnpm test:ci",
+    "check:lint": "eslint ./src --max-warnings=0",
+    "check:style": "prettier --write src/",
+    "check:type": "rm -f *.tsbuildinfo && tsc --project tsconfig.json",
+    "prepare": "tsdown",
+    "start": "tsdown --watch",
+    "test": "vitest",
+    "test:ci": "vitest run",
+    "bumpVersion": "node scripts/bumpVersion.js"
   },
-  "husky": {
-    "hooks": {
-      "pre-commit": "dts lint"
-    }
-  },
-  "prettier": {
-    "printWidth": 80,
-    "semi": true,
-    "singleQuote": true,
-    "trailingComma": "es5"
-  },
-  "module": "dist/indexed-collection.esm.js",
-  "size-limit": [
-    {
-      "path": "dist/indexed-collection.cjs.production.min.js",
-      "limit": "10 KB"
-    },
-    {
-      "path": "dist/indexed-collection.esm.js",
-      "limit": "10 KB"
-    }
-  ],
   "devDependencies": {
-    "@size-limit/preset-small-lib": "^11.0.2",
-    "dts-cli": "^2.0.4",
-    "size-limit": "^11.0.2",
-    "tslib": "^2.6.2",
-    "typescript": "^5.3.3"
+    "@trivago/prettier-plugin-sort-imports": "^5.2.2",
+    "@typescript-eslint/eslint-plugin": "^8.30.1",
+    "@typescript-eslint/parser": "^8.30.1",
+    "eslint": "^9.25.0",
+    "eslint-plugin-unicorn": "^58.0.0",
+    "globals": "^16.2.0",
+    "prettier": "^3.5.3",
+    "rolldown": "1.0.0-beta.10",
+    "tsdown": "^0.12.5",
+    "typescript": "^5.8.3",
+    "typescript-eslint": "^8.33.0",
+    "vitest": "^3.1.4"
   }
 }

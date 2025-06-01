@@ -1,3 +1,4 @@
+import { describe, beforeEach, it, expect } from 'vitest';
 import { CollectionViewBase } from '../src';
 import {
   CarCollection,
