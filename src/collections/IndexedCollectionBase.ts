@@ -1,6 +1,6 @@
 import { CollectionNature } from '../core/CollectionNature';
-import { ICollectionChangeDetail } from '../core/ICollectionChangeDetail';
-import { ICollectionOption } from '../core/ICollectionOption';
+import { type ICollectionChangeDetail } from '../core/ICollectionChangeDetail';
+import { type ICollectionOption } from '../core/ICollectionOption';
 import { IIndex } from '../core/IIndex';
 import { IMutableCollection } from '../core/IMutableCollection';
 import { IReadonlyCollection } from '../core/IReadonlyCollection';
