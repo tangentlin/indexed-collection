@@ -1,11 +1,6 @@
 const fs = require('fs');
 const path = require('path');
 
-
-function isFolder(p) {
-  return fs.statSync(p).isDirectory();
-}
-
 function adjustFolderPackageJson(dir, version) {
   const fileName = path.join(dir, 'package.json');
   if (!fs.existsSync(fileName)) {
