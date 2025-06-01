@@ -1,0 +1,8 @@
+.sl/**/*
+.vscode
+pnpm-lock.yaml
+**/coverage/**/*
+**/playwright-report/**/*
+**/dist/**/*
+**/build/**/*
+CNAME

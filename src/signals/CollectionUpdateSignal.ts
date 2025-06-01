@@ -1,5 +1,6 @@
 import { ICollectionUpdateLineItem } from '../core/ICollectionChangeDetail';
 import { IReadonlyCollection } from '../core/IReadonlyCollection';
+
 import { Signal } from './Signal';
 
 export class CollectionUpdateSignal<T> extends Signal {

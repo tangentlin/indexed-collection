@@ -1,4 +1,5 @@
 import { IReadonlyCollection } from '../core/IReadonlyCollection';
+
 import { Signal } from './Signal';
 
 export class CollectionAddSignal<T> extends Signal {

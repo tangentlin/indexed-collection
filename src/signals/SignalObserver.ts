@@ -7,8 +7,7 @@ import { Signal, SignalType } from './Signal';
  */
 export class SignalObserver implements ISignalObserver {
   private readonly typeToHandleMap: Map<SignalType, Set<SignalHandler<Signal>>>;
-  private handlerToTypeMap: Map<SignalHandler<Signal>, Set<SignalType>> =
-    new Map();
+  private handlerToTypeMap: Map<SignalHandler<Signal>, Set<SignalType>> = new Map();
   constructor() {
     this.typeToHandleMap = new Map();
   }
@@ -31,10 +30,7 @@ export class SignalObserver implements ISignalObserver {
    * @param type The type of a signal
    * @param handler The handler to be called when the signal is emitted
    */
-  registerObserver<T extends Signal>(
-    type: symbol,
-    handler: SignalHandler<T>
-  ): void {
+  registerObserver<T extends Signal>(type: symbol, handler: SignalHandler<T>): void {
     const handlers = this.typeToHandleMap.get(type) ?? new Set();
     // @ts-ignore
     handlers.add(handler);
@@ -52,10 +48,7 @@ export class SignalObserver implements ISignalObserver {
    * @param handler The handle to be unregistered
    * @param type (Optional) The type of a signal (if not provided, all types associated with the handle will be unregistered)
    */
-  unregisterObserver<T extends Signal>(
-    handler: SignalHandler<T>,
-    type?: symbol
-  ): void {
+  unregisterObserver<T extends Signal>(handler: SignalHandler<T>, type?: symbol): void {
     let relevantSignalTypes: Set<SignalType>;
     if (type == null) {
       // @ts-ignore

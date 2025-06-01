@@ -1,32 +1,33 @@
 name: CI
-on: [push]
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
 jobs:
-  build:
-    name: Build, lint, and test on Node ${{ matrix.node }} and ${{ matrix.os }}
-
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        node: ['20.x']
-        os: [ubuntu-latest]
-
+  ci:
+    name: Lint, Test, Build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
     steps:
-      - name: Checkout repo
-        uses: actions/checkout@v3
+      - name: Checkout
+        uses: actions/checkout@v4
 
-      - name: Use Node ${{ matrix.node }}
-        uses: actions/setup-node@v3
-        with:
-          cache: 'yarn'
-          cache-dependency-path: 'yarn.lock'
-          node-version: ${{ matrix.node }}
-      - run: yarn install --frozen-lockfile
+      - name: Setup
+        uses: ./.github/actions/builderui-setup
 
-      - name: Lint
-        run: yarn lint
+      - name: Run code formatter
+        run: pnpm check:style
+
+      - name: Run linter
+        run: pnpm check:lint
 
       - name: Test
-        run: yarn test --ci --maxWorkers=1
+        run: pnpm test:ci
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v4
@@ -34,4 +35,4 @@ jobs:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
       - name: Build
-        run: yarn build
+        run: pnpm build
