@@ -24,7 +24,7 @@ export class CarCollection extends IndexedCollectionBase<ICar> {
   >;
 
   constructor(initialValues?: readonly ICar[], option?: ICollectionOption) {
-    super(initialValues, undefined, option);
+    super({ initialValues, option });
     this.byMakeIndex = getByMakeIndex(option);
     this.byIsNewIndex = getByIsNewIndex(option);
     this.byPriceRangeIndex = getByPriceRangeIndex(option);
