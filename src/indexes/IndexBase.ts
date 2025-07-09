@@ -1,5 +1,5 @@
 import { CollectionNature } from '../core/CollectionNature';
-import { ICollectionOption } from '../core/ICollectionOption';
+import { type ICollectionOption } from '../core/ICollectionOption';
 import { KeyExtract } from '../core/KeyExtract';
 import { defaultCollectionOption } from '../core/defaultCollectionOption';
 import { IInternalList } from '../core/internals/IInternalList';

@@ -1,4 +1,4 @@
-import { CollectionNature } from './CollectionNature';
+import { type CollectionNature } from './CollectionNature';
 
 export interface ICollectionOption {
   nature: CollectionNature;
