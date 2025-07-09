@@ -3,5 +3,5 @@ export { CollectionChangeSignal } from './CollectionChangeSignal';
 export { CollectionRemoveSignal } from './CollectionRemoveSignal';
 export { CollectionUpdateSignal } from './CollectionUpdateSignal';
 export { type SignalHandler } from './ISignalObserver';
-export { type Signal, type SignalType } from './Signal';
+export { Signal, type SignalType } from './Signal';
 export { type SignalObserver } from './SignalObserver';
