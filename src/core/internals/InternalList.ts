@@ -12,14 +12,24 @@ export class InternalList<T> implements IInternalList<T> {
   private _output: T[] = [];
   constructor(public readonly source: T[]) {}
 
+  /**
+   * Mark the cached output as stale so it will be regenerated on next access.
+   */
   invalidate() {
     this._isSynced = false;
   }
 
+  /**
+   * Number of items currently stored in the list.
+   */
   get count(): number {
     return this.source.length;
   }
 
+  /**
+   * Return a cached array of the current contents. The cache is refreshed
+   * lazily when the list has been invalidated.
+   */
   get output(): readonly T[] {
     if (!this._isSynced) {
       this._isSynced = true;
@@ -29,15 +39,24 @@ export class InternalList<T> implements IInternalList<T> {
     return this._output;
   }
 
+  /**
+   * Check if the given item exists in the list.
+   */
   exists(item: T): boolean {
     return this.source.includes(item);
   }
 
+  /**
+   * Append an item to the list.
+   */
   add(item: T): void {
     this.source.push(item);
     this.invalidate();
   }
 
+  /**
+   * Remove the first occurrence of the item from the list.
+   */
   remove(item: T): void {
     const index: number = this.source.findIndex(listItem => listItem === item);
     if (index >= 0) {
@@ -46,6 +65,9 @@ export class InternalList<T> implements IInternalList<T> {
     }
   }
 
+  /**
+   * Replace an existing item with a new one if found.
+   */
   update(newItem: T, oldItem: T): void {
     const index: number = this.source.findIndex(listItem => listItem === oldItem);
     if (index >= 0) {
@@ -54,6 +76,9 @@ export class InternalList<T> implements IInternalList<T> {
     }
   }
 
+  /**
+   * Move an item to a position before another item.
+   */
   moveBefore(item: T, before: T): void {
     const itemIndex: number = this.source.findIndex(listItem => listItem === item);
     const beforeIndex: number = this.source.findIndex(listItem => listItem === before);
@@ -64,6 +89,9 @@ export class InternalList<T> implements IInternalList<T> {
     }
   }
 
+  /**
+   * Move an item to a position after another item.
+   */
   moveAfter(item: T, after: T): void {
     const itemIndex: number = this.source.findIndex(listItem => listItem === item);
     const afterIndex: number = this.source.findIndex(listItem => listItem === after);
