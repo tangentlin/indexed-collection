@@ -4,13 +4,13 @@ import { ICar, newTeslaModelX } from './shared/data';
 
 class SimpleCarCollection extends IndexedCollectionBase<ICar> {
   constructor(initialValues?: readonly ICar[]) {
-    super(initialValues);
+    super({ initialValues });
   }
 }
 
 class PrimaryKeyCarCollection extends PrimaryKeyCollection<ICar> {
   constructor(initialValues?: readonly ICar[]) {
-    super((car) => car.id, initialValues);
+    super({ primaryKeyExtract: (car) => car.id, initialValues });
   }
 }
 

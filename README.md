@@ -318,7 +318,10 @@ need to be provided in the constructor. For example
 // Assuming each IPerson is identified by a unique SSN which is a number
 class PeopleCollection extends PrimaryKeyCollection<IPerson, number> {
   constructor(initialValues?: readonly IPerson[]) {
-    super((person: IPerson) => person.ssn);
+    super({
+      primaryKeyExtract: (person: IPerson) => person.ssn,
+      initialValues,
+    });
 
     // Additional indexes similar to IndexedCollectionBased example above
   }

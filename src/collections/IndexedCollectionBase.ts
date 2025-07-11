@@ -16,6 +16,12 @@ import { SignalObserver } from '../signals/SignalObserver';
 
 import { mergeCollectionChangeDetail } from './util';
 
+export interface IndexedCollectionOptions<T> {
+  initialValues?: readonly T[];
+  indexes?: readonly IIndex<T>[];
+  option?: Partial<ICollectionOption>;
+}
+
 export abstract class IndexedCollectionBase<T> extends SignalObserver implements IMutableCollection<T> {
   private _allItemList: IInternalList<T> = new InternalSetList<T>(new Set());
 
@@ -27,14 +33,11 @@ export abstract class IndexedCollectionBase<T> extends SignalObserver implements
 
   public readonly option: Readonly<ICollectionOption>;
 
-  protected constructor(
-    initialValues?: readonly T[],
-    additionalIndexes: ReadonlyArray<IIndex<T>> = [],
-    option: Partial<ICollectionOption> = defaultCollectionOption
-  ) {
+  protected constructor(options: IndexedCollectionOptions<T> = {}) {
     super();
+    const { initialValues, indexes = [], option = defaultCollectionOption } = options;
     this.option = Object.assign({}, defaultCollectionOption, option);
-    this.buildIndexes(additionalIndexes);
+    this.buildIndexes(indexes);
     if (this.option.nature === CollectionNature.Set) {
       this._allItemList = new InternalSetList<T>(new Set());
     } else {

@@ -1,28 +1,32 @@
-import { ICollectionOption } from '../core/ICollectionOption';
 import { IIndex } from '../core/IIndex';
 import { SingleKeyExtract } from '../core/KeyExtract';
 import { Optional } from '../core/Optional';
-import { defaultCollectionOption } from '../core/defaultCollectionOption';
 import { CollectionIndex } from '../indexes/CollectionIndex';
 
-import { IndexedCollectionBase } from './IndexedCollectionBase';
+import {
+  IndexedCollectionBase,
+  type IndexedCollectionOptions,
+} from './IndexedCollectionBase';
 
 /**
  * A collection where every item contains a unique identifier key (aka primary key)
  */
+export interface PrimaryKeyCollectionOptions<T, IdT>
+  extends IndexedCollectionOptions<T> {
+  primaryKeyExtract: SingleKeyExtract<T, IdT>;
+}
+
 export class PrimaryKeyCollection<T, IdT = string> extends IndexedCollectionBase<T> {
   protected readonly idIndex: CollectionIndex<T, [IdT]>;
-  constructor(
-    public readonly primaryKeyExtract: SingleKeyExtract<T, IdT>,
-    initialValues?: readonly T[],
-    additionalIndexes: ReadonlyArray<IIndex<T>> = [],
-    option: Readonly<ICollectionOption> = defaultCollectionOption
-  ) {
-    super(undefined, undefined, option);
-    this.idIndex = new CollectionIndex<T, [IdT]>([primaryKeyExtract]);
-    this.buildIndexes([this.idIndex, ...additionalIndexes]);
-    if (initialValues) {
-      this.addRange(initialValues);
+  public readonly primaryKeyExtract: SingleKeyExtract<T, IdT>;
+  constructor(options: PrimaryKeyCollectionOptions<T, IdT>) {
+    const { option } = options;
+    super({ option });
+    this.primaryKeyExtract = options.primaryKeyExtract;
+    this.idIndex = new CollectionIndex<T, [IdT]>([this.primaryKeyExtract]);
+    this.buildIndexes(options.indexes ?? []);
+    if (options.initialValues) {
+      this.addRange(options.initialValues);
     }
   }
 
