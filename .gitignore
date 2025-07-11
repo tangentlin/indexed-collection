@@ -67,3 +67,6 @@ typings/
 # IDE
 *.iml
 .idea/
+
+# Node compile cache
+node-compile-cache/

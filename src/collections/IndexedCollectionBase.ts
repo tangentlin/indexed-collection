@@ -126,7 +126,7 @@ export abstract class IndexedCollectionBase<T> extends SignalObserver implements
     this._allItemList.remove(item);
 
     for (const index of this.indexes) {
-      index.unIndex(item);
+      index.unindex(item);
     }
     this.notifyChange({
       removed: [item],
@@ -140,7 +140,7 @@ export abstract class IndexedCollectionBase<T> extends SignalObserver implements
     }
 
     for (const index of this.indexes) {
-      index.unIndex(oldItem);
+      index.unindex(oldItem);
     }
 
     this._allItemList.update(newItem, oldItem);

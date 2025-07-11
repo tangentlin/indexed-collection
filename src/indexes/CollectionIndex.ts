@@ -16,6 +16,6 @@ export class CollectionIndex<T, KeysT extends KeyTypeArray> extends IndexBase<T>
   }
 
   public getValue(...keys: KeysT): readonly T[] {
-    return super.getValueInternal(keys);
+    return super.getValuesByKey(keys);
   }
 }

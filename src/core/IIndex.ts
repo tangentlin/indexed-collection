@@ -11,7 +11,7 @@ export interface IIndex<T> {
    * @param item
    * @return true if the item has been removed to the index successfully.
    */
-  unIndex(item: T): boolean;
+  unindex(item: T): boolean;
 
   reset(): void;
 }

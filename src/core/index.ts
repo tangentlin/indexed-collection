@@ -1,5 +1,5 @@
 export { CollectionNature } from './CollectionNature';
-export { type CollectionNature } from './CollectionNature';
+export type { CollectionNature as CollectionNatureType } from './CollectionNature';
 export { type ICollectionOption } from './ICollectionOption';
 export { type ICollectionViewOption } from './ICollectionViewOption';
 export { type IMutableCollection } from './IMutableCollection';

@@ -12,21 +12,21 @@ type SetOrArray<T> = Set<T> | T[];
 type LeafMap<T, KeyT = unknown> = Map<KeyT, IInternalList<T>>;
 
 export abstract class IndexBase<T> {
-  protected readonly _keyFns: readonly KeyExtract<T>[];
+  protected readonly keyExtractors: readonly KeyExtract<T>[];
   protected readonly option: Readonly<ICollectionOption>;
-  public internalMap = new Map();
+  public indexMap = new Map();
 
   protected constructor(
     keyFns: readonly KeyExtract<T>[],
     option: Readonly<ICollectionOption> = defaultCollectionOption
   ) {
-    this._keyFns = keyFns;
+    this.keyExtractors = keyFns;
     this.option = Object.freeze(Object.assign({}, defaultCollectionOption, option));
   }
 
   index(item: T): boolean {
-    const keys = this.getKeys(item);
-    const leafMaps = this.getLeafMaps(keys);
+    const keys = this.extractKeys(item);
+    const leafMaps = this.resolveLeafMaps(keys);
     const lastIndex = keys.length - 1;
     const lastKeys = keys[lastIndex];
     let added = false;
@@ -40,9 +40,9 @@ export abstract class IndexBase<T> {
     return added;
   }
 
-  unIndex(item: T): boolean {
-    const keys = this.getKeys(item);
-    const leafMaps = this.getLeafMaps(keys);
+  unindex(item: T): boolean {
+    const keys = this.extractKeys(item);
+    const leafMaps = this.resolveLeafMaps(keys);
     const lastKeys = keys[keys.length - 1];
 
     let removed = false;
@@ -57,9 +57,9 @@ export abstract class IndexBase<T> {
     return removed;
   }
 
-  protected getValueInternal(keys: readonly unknown[]): readonly T[] {
+  protected getValuesByKey(keys: readonly unknown[]): readonly T[] {
     const convertedKeys = keys.map(k => [k]);
-    const leafMaps = this.getLeafMaps(convertedKeys);
+    const leafMaps = this.resolveLeafMaps(convertedKeys);
     const lastKey = keys[keys.length - 1];
     const values = leafMaps[0]?.get(lastKey);
     if (values == null) {
@@ -69,19 +69,19 @@ export abstract class IndexBase<T> {
     return values.output;
   }
 
-  protected getKeys(item: T): SetOrArray<unknown>[] {
+  protected extractKeys(item: T): SetOrArray<unknown>[] {
     // @ts-ignore
-    return this._keyFns.map(keyFn => {
+    return this.keyExtractors.map(keyFn => {
       return keyFn.isMultiple ? keyFn(item) : [keyFn(item)];
     });
   }
 
-  protected getLeafMaps(keys: SetOrArray<unknown>[]): LeafMap<T>[] {
+  protected resolveLeafMaps(keys: SetOrArray<unknown>[]): LeafMap<T>[] {
     if (keys.length === 1) {
-      return [this.internalMap as LeafMap<T>];
+      return [this.indexMap as LeafMap<T>];
     }
 
-    let currentLevelMap = [this.internalMap];
+    let currentLevelMap = [this.indexMap];
     for (let i = 0; i < keys.length - 1; i++) {
       const maps = [];
       for (const key of keys[i]) {
@@ -100,7 +100,7 @@ export abstract class IndexBase<T> {
   }
 
   reset() {
-    this.internalMap = new Map();
+    this.indexMap = new Map();
   }
 }
 
