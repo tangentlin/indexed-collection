@@ -26,7 +26,7 @@ export abstract class IndexBase<T> {
 
   index(item: T): boolean {
     const keys = this.getKeys(item);
-    const leafMaps = this.getLeafMaps(keys);
+    const leafMaps = this.getLeafMaps(keys, true);
     const lastIndex = keys.length - 1;
     const lastKeys = keys[lastIndex];
     let added = false;
@@ -42,7 +42,7 @@ export abstract class IndexBase<T> {
 
   unIndex(item: T): boolean {
     const keys = this.getKeys(item);
-    const leafMaps = this.getLeafMaps(keys);
+    const leafMaps = this.getLeafMaps(keys, false);
     const lastKeys = keys[keys.length - 1];
 
     let removed = false;
@@ -59,7 +59,7 @@ export abstract class IndexBase<T> {
 
   protected getValueInternal(keys: readonly unknown[]): readonly T[] {
     const convertedKeys = keys.map(k => [k]);
-    const leafMaps = this.getLeafMaps(convertedKeys);
+    const leafMaps = this.getLeafMaps(convertedKeys, false);
     const lastKey = keys[keys.length - 1];
     const values = leafMaps[0]?.get(lastKey);
     if (values == null) {
@@ -76,23 +76,33 @@ export abstract class IndexBase<T> {
     });
   }
 
-  protected getLeafMaps(keys: SetOrArray<unknown>[]): LeafMap<T>[] {
+  protected getLeafMaps(
+    keys: SetOrArray<unknown>[],
+    createIfMissing: boolean = true
+  ): LeafMap<T>[] {
     if (keys.length === 1) {
       return [this.internalMap as LeafMap<T>];
     }
 
-    let currentLevelMap = [this.internalMap];
+    let currentLevelMap: Map<unknown, unknown>[] = [this.internalMap];
     for (let i = 0; i < keys.length - 1; i++) {
-      const maps = [];
+      const maps: Map<unknown, unknown>[] = [];
       for (const key of keys[i]) {
         for (const map of currentLevelMap) {
-          if (!map.has(key)) {
-            map.set(key, new Map());
+          let next = map.get(key) as Map<unknown, unknown> | undefined;
+          if (next == null) {
+            if (!createIfMissing) {
+              continue;
+            }
+            next = new Map();
+            map.set(key, next);
           }
-          maps.push(map.get(key));
+          maps.push(next);
         }
       }
-
+      if (maps.length === 0) {
+        return [];
+      }
       currentLevelMap = maps;
     }
 
@@ -125,7 +135,10 @@ function addItemToMap<T>(key: unknown, item: T, map: LeafMap<T>, isUsingSet: boo
 }
 
 function removeItemFromMap<T>(key: unknown, item: T, map: LeafMap<T>): boolean {
-  const items = map.get(key) as IInternalList<T>;
+  const items = map.get(key) as IInternalList<T> | undefined;
+  if (items == null) {
+    return false;
+  }
   if (items.exists(item)) {
     items.remove(item);
     return true;

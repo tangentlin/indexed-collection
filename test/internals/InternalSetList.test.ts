@@ -30,6 +30,22 @@ describe('invalidation test', () => {
       });
     });
 
+    describe('add existing element', () => {
+      let sameOutput: readonly number[];
+      beforeEach(() => {
+        sameOutput = list.output;
+        list.add(6);
+      });
+
+      test('source size remains the same', () => {
+        expect(list.source.size).toBe(3);
+      });
+
+      test('output instance should remain the same', () => {
+        expect(list.output).toBe(sameOutput);
+      });
+    });
+
     describe('remove', () => {
       beforeEach(() => {
         list.remove(6);
@@ -45,6 +61,22 @@ describe('invalidation test', () => {
 
       test('output should return a different instance of array', () => {
         expect(list.output).not.toBe(outputBefore);
+      });
+    });
+
+    describe('remove non-existing element', () => {
+      let sameOutput: readonly number[];
+      beforeEach(() => {
+        sameOutput = list.output;
+        list.remove(100);
+      });
+
+      test('source should remain unchanged', () => {
+        expect(list.source.size).toBe(3);
+      });
+
+      test('output instance should remain the same', () => {
+        expect(list.output).toBe(sameOutput);
       });
     });
   });

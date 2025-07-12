@@ -31,8 +31,11 @@ export class InternalSetList<T> implements IInternalList<T> {
   }
 
   add(item: T): void {
+    const sizeBefore = this.source.size;
     this.source.add(item);
-    this.invalidate();
+    if (this.source.size !== sizeBefore) {
+      this.invalidate();
+    }
   }
 
   exists(item: T): boolean {
@@ -40,8 +43,10 @@ export class InternalSetList<T> implements IInternalList<T> {
   }
 
   remove(item: T): void {
-    this.source.delete(item);
-    this.invalidate();
+    const didDelete = this.source.delete(item);
+    if (didDelete) {
+      this.invalidate();
+    }
   }
 
   update(newItem: T, oldItem: T): void {
