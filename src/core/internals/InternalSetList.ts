@@ -44,8 +44,11 @@ export class InternalSetList<T> implements IInternalList<T> {
    * Add an item to the set.
    */
   add(item: T): void {
+    const sizeBefore = this.source.size;
     this.source.add(item);
-    this.invalidate();
+    if (this.source.size !== sizeBefore) {
+      this.invalidate();
+    }
   }
 
   /**
@@ -59,8 +62,10 @@ export class InternalSetList<T> implements IInternalList<T> {
    * Remove an item from the set.
    */
   remove(item: T): void {
-    this.source.delete(item);
-    this.invalidate();
+    const didDelete = this.source.delete(item);
+    if (didDelete) {
+      this.invalidate();
+    }
   }
 
   /**

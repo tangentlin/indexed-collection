@@ -1,5 +1,6 @@
 import { CollectionNature } from '../core/CollectionNature';
 import { type ICollectionOption } from '../core/ICollectionOption';
+import { IIndex } from '../core/IIndex';
 import { KeyExtract } from '../core/KeyExtract';
 import { defaultCollectionOption } from '../core/defaultCollectionOption';
 import { IInternalList } from '../core/internals/IInternalList';
@@ -16,7 +17,7 @@ type LeafMap<T, KeyT = unknown> = Map<KeyT, IInternalList<T>>;
  * items they reference. Keys are extracted using the provided key extraction
  * functions.
  */
-export abstract class IndexBase<T> {
+export abstract class IndexBase<T> implements IIndex<T> {
   protected readonly _keyFns: readonly KeyExtract<T>[];
   protected readonly option: Readonly<ICollectionOption>;
   public internalMap = new Map();
@@ -38,7 +39,7 @@ export abstract class IndexBase<T> {
    */
   index(item: T): boolean {
     const keys = this.getKeys(item);
-    const leafMaps = this.getLeafMaps(keys);
+    const leafMaps = this.getLeafMaps(keys, true);
     const lastIndex = keys.length - 1;
     const lastKeys = keys[lastIndex];
     let added = false;
@@ -58,9 +59,9 @@ export abstract class IndexBase<T> {
    * @param item The item to unindex
    * @returns True if the item existed for at least one key
    */
-  unIndex(item: T): boolean {
+  removeFromIndex(item: T): boolean {
     const keys = this.getKeys(item);
-    const leafMaps = this.getLeafMaps(keys);
+    const leafMaps = this.getLeafMaps(keys, false);
     const lastKeys = keys[keys.length - 1];
 
     let removed = false;
@@ -83,7 +84,7 @@ export abstract class IndexBase<T> {
    */
   protected getValueInternal(keys: readonly unknown[]): readonly T[] {
     const convertedKeys = keys.map(k => [k]);
-    const leafMaps = this.getLeafMaps(convertedKeys);
+    const leafMaps = this.getLeafMaps(convertedKeys, false);
     const lastKey = keys[keys.length - 1];
     const values = leafMaps[0]?.get(lastKey);
     if (values == null) {
@@ -115,23 +116,33 @@ export abstract class IndexBase<T> {
    *
    * @param keys Array of key values for each level of the index
    */
-  protected getLeafMaps(keys: SetOrArray<unknown>[]): LeafMap<T>[] {
+  protected getLeafMaps(
+    keys: SetOrArray<unknown>[],
+    createIfMissing: boolean
+  ): LeafMap<T>[] {
     if (keys.length === 1) {
       return [this.internalMap as LeafMap<T>];
     }
 
-    let currentLevelMap = [this.internalMap];
+    let currentLevelMap: Map<unknown, unknown>[] = [this.internalMap];
     for (let i = 0; i < keys.length - 1; i++) {
-      const maps = [];
+      const maps: Map<unknown, unknown>[] = [];
       for (const key of keys[i]) {
         for (const map of currentLevelMap) {
-          if (!map.has(key)) {
-            map.set(key, new Map());
+          let next = map.get(key) as Map<unknown, unknown> | undefined;
+          if (next == null) {
+            if (!createIfMissing) {
+              continue;
+            }
+            next = new Map();
+            map.set(key, next);
           }
-          maps.push(map.get(key));
+          maps.push(next);
         }
       }
-
+      if (maps.length === 0) {
+        return [];
+      }
       currentLevelMap = maps;
     }
 
@@ -181,7 +192,7 @@ function addItemToMap<T>(key: unknown, item: T, map: LeafMap<T>, isUsingSet: boo
  */
 function removeItemFromMap<T>(key: unknown, item: T, map: LeafMap<T>): boolean {
   const items = map.get(key) as IInternalList<T>;
-  if (items.exists(item)) {
+  if (items != null && items.exists(item)) {
     items.remove(item);
     return true;
   }
