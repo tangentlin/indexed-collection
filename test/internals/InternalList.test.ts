@@ -64,7 +64,6 @@ describe('invalidation test', () => {
       });
 
       test('source reorder the number according to the move', () => {
-        console.log(list.source);
         expect(list.source).toEqual([6, 1, 7]);
       });
     });
